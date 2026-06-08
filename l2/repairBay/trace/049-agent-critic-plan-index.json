@@ -1,0 +1,57 @@
+{
+  "savedAt": "2026-06-08T23:25:16.358Z",
+  "agentName": "agentCriticPlanIndex",
+  "stepId": 49,
+  "planning": {
+    "planId": "plan-index-critic:workflowIndex:1",
+    "dependsOn": [
+      "plan-workflow-index"
+    ],
+    "executionMode": "sequential",
+    "executionHost": "client"
+  },
+  "status": "waiting_after_prompt",
+  "payload": {
+    "type": "flexible",
+    "result": {
+      "toolName": "submitPlanIndexCritique",
+      "arguments": {
+        "status": "ok",
+        "result": {
+          "approved": true,
+          "errors": [],
+          "warnings": [
+            {
+              "code": "workflow.usecaseRef.unknown",
+              "message": "workflow serviceOrderWorkflow references unknown usecase serviceOrderUsecaseEntities",
+              "path": "workflows[0]"
+            },
+            {
+              "code": "workflow.usecaseRef.unknown",
+              "message": "workflow inventoryAlertWorkflow references unknown usecase inventoryAdjustUsecaseEntities",
+              "path": "workflows[1]"
+            },
+            {
+              "code": "workflow.usecaseRef.unknown",
+              "message": "workflow billingWorkflow references unknown usecase invoiceUsecaseEntities",
+              "path": "workflows[2]"
+            },
+            {
+              "code": "workflow.usecaseRef.unknown",
+              "message": "workflow maintenanceForecastWorkflow references unknown usecase maintenanceForecastUsecaseEntities",
+              "path": "workflows[3]"
+            }
+          ]
+        },
+        "questions": [],
+        "trace": [
+          "Confirmed 4 warnings from deterministic reference checks regarding unknown usecaseRefs. All actors, executionModes, createsTask flags, persistenceRefs and metricRefs comply with the contract. No errors found."
+        ]
+      }
+    },
+    "status": "completed",
+    "stepId": 50,
+    "interaction": null,
+    "nextSteps": null
+  }
+}

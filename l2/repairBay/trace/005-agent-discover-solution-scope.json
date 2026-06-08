@@ -1,0 +1,344 @@
+{
+  "savedAt": "2026-06-08T23:13:03.566Z",
+  "agentName": "agentDiscoverSolutionScope",
+  "stepId": 5,
+  "planning": {
+    "planId": "req-discover-scope",
+    "dependsOn": [
+      "req-clarification-answer"
+    ],
+    "executionMode": "sequential",
+    "executionHost": "client"
+  },
+  "status": "waiting_after_prompt",
+  "payload": {
+    "type": "flexible",
+    "result": {
+      "toolName": "submitSolutionScopeDraft",
+      "arguments": {
+        "status": "ok",
+        "result": {
+          "domain": "repairBay",
+          "summary": "Aplicativo RepairBay para oficinas mecânicas independentes, focado em organizar ordens de serviço e histórico de veículos com custos precisos, além de controle de peças e faturamento. Inclui dashboard inicial, fluxo rápido de OS e assistente de IA para sugestões de reparos e estimativa de tempo de mão de obra, com suporte a pt-BR e en.",
+          "actors": [
+            {
+              "actorId": "shopOwner",
+              "title": "Dono da oficina",
+              "description": "Responsável por visão geral do negócio, faturamento e indicadores."
+            },
+            {
+              "actorId": "attendant",
+              "title": "Atendente",
+              "description": "Registra clientes/veículos e cria/acompanha ordens de serviço."
+            },
+            {
+              "actorId": "mechanic",
+              "title": "Mecânico",
+              "description": "Executa serviços, registra mão de obra e peças usadas na OS."
+            }
+          ],
+          "capabilities": [
+            {
+              "capabilityId": "manageCustomers",
+              "title": "Gerenciar clientes",
+              "description": "Cadastrar e manter dados de clientes e histórico associado.",
+              "actor": "attendant",
+              "priority": "now"
+            },
+            {
+              "capabilityId": "manageVehicles",
+              "title": "Gerenciar veículos",
+              "description": "Cadastrar veículos com marca/modelo/ano/placa/VIN e associar ao cliente.",
+              "actor": "attendant",
+              "priority": "now"
+            },
+            {
+              "capabilityId": "serviceOrderLifecycle",
+              "title": "Criar e acompanhar OS",
+              "description": "Criar OS, registrar itens de mão de obra e peças usadas, atualizar status e total.",
+              "actor": "attendant",
+              "priority": "now"
+            },
+            {
+              "capabilityId": "serviceOrderExecution",
+              "title": "Executar serviços na OS",
+              "description": "Registrar serviços executados, tempos e peças utilizadas na OS.",
+              "actor": "mechanic",
+              "priority": "now"
+            },
+            {
+              "capabilityId": "vehicleHistory",
+              "title": "Histórico completo do veículo e cliente",
+              "description": "Consultar histórico de serviços, peças e custos por veículo/cliente.",
+              "actor": "shopOwner",
+              "priority": "now"
+            },
+            {
+              "capabilityId": "partsInventoryControl",
+              "title": "Controle de peças e estoque",
+              "description": "Gerir peças, níveis de estoque e alertas de reposição.",
+              "actor": "shopOwner",
+              "priority": "now"
+            },
+            {
+              "capabilityId": "billingManagement",
+              "title": "Faturamento",
+              "description": "Gerar faturas vinculadas às OS e acompanhar valores.",
+              "actor": "shopOwner",
+              "priority": "now"
+            },
+            {
+              "capabilityId": "dashboardInsights",
+              "title": "Dashboard operacional",
+              "description": "Visualizar OS abertas, receita do mês e veículos com manutenção prevista.",
+              "actor": "shopOwner",
+              "priority": "now"
+            },
+            {
+              "capabilityId": "llmRepairSuggestions",
+              "title": "IA para sugestões de reparo e tempo",
+              "description": "Sugerir reparos comuns por modelo/ano e estimar tempo de mão de obra a partir da descrição.",
+              "actor": "mechanic",
+              "priority": "soon"
+            }
+          ],
+          "artifactSignals": {
+            "pages": [
+              {
+                "signal": "dashboardPage",
+                "title": "Dashboard",
+                "actor": "shopOwner",
+                "reason": "Necessário para visão rápida de OS abertas, receita do mês e manutenção prevista.",
+                "priority": "now"
+              },
+              {
+                "signal": "vehicleHistoryPage",
+                "title": "Histórico de Veículo e Cliente",
+                "actor": "attendant",
+                "reason": "Foco principal do produto: histórico completo por veículo/cliente.",
+                "priority": "now"
+              },
+              {
+                "signal": "serviceOrderListPage",
+                "title": "Ordens de Serviço",
+                "actor": "attendant",
+                "reason": "Listar e acessar OS para criação e acompanhamento rápido.",
+                "priority": "now"
+              },
+              {
+                "signal": "serviceOrderDetailPage",
+                "title": "Detalhe da Ordem de Serviço",
+                "actor": "mechanic",
+                "reason": "Registrar itens de mão de obra, peças usadas, status e total.",
+                "priority": "now"
+              },
+              {
+                "signal": "partsInventoryPage",
+                "title": "Controle de Peças/Estoque",
+                "actor": "shopOwner",
+                "reason": "Gerir estoque e alertas de reposição.",
+                "priority": "now"
+              },
+              {
+                "signal": "billingPage",
+                "title": "Faturamento",
+                "actor": "shopOwner",
+                "reason": "Gerar e acompanhar faturas por OS.",
+                "priority": "now"
+              },
+              {
+                "signal": "adminDashboardPage",
+                "title": "Administração do Painel",
+                "actor": "shopOwner",
+                "reason": "Configurar painel básico do MVP e indicadores exibidos.",
+                "priority": "now"
+              }
+            ],
+            "workflows": [
+              {
+                "signal": "serviceOrderWorkflow",
+                "title": "Fluxo da Ordem de Serviço",
+                "actor": "attendant",
+                "reason": "A OS tem status e transições até fechamento; precisa de fluxo definido.",
+                "priority": "now"
+              },
+              {
+                "signal": "inventoryAlertWorkflow",
+                "title": "Alerta de Estoque",
+                "actor": "shopOwner",
+                "reason": "Alertas de peças exigem regras e acionamento automático.",
+                "priority": "now"
+              },
+              {
+                "signal": "billingWorkflow",
+                "title": "Fluxo de Faturamento",
+                "actor": "shopOwner",
+                "reason": "Geração de fatura a partir da OS e controle de pagamento.",
+                "priority": "soon"
+              }
+            ],
+            "plugins": [],
+            "agents": [
+              {
+                "signal": "repairSuggestionAgent",
+                "title": "Agente de IA para reparos e tempo",
+                "actor": "mechanic",
+                "reason": "Requisito de IA para sugerir reparos comuns e estimar tempo de mão de obra.",
+                "priority": "soon"
+              }
+            ],
+            "horizontalModules": [
+              {
+                "signal": "i18nModule",
+                "title": "Internacionalização",
+                "reason": "Suporte obrigatório a pt-BR e en.",
+                "priority": "now"
+              },
+              {
+                "signal": "authModule",
+                "title": "Autenticação e perfis",
+                "reason": "Perfis de dono, atendente e mecânico com permissões distintas.",
+                "priority": "now"
+              }
+            ],
+            "mdm": [
+              {
+                "signal": "customerMasterData",
+                "title": "MDM de Cliente",
+                "reason": "Entidade central para histórico e OS; precisa padronização e relacionamento.",
+                "priority": "now",
+                "mdmKind": "entity"
+              },
+              {
+                "signal": "vehicleMasterData",
+                "title": "MDM de Veículo",
+                "reason": "Veículo é o principal objeto do histórico e manutenção prevista.",
+                "priority": "now",
+                "mdmKind": "entity"
+              },
+              {
+                "signal": "serviceOrderMasterData",
+                "title": "MDM de Ordem de Serviço",
+                "reason": "OS é o núcleo do fluxo e do cálculo de custos.",
+                "priority": "now",
+                "mdmKind": "entity"
+              },
+              {
+                "signal": "partInventoryMasterData",
+                "title": "MDM de Peça/Estoque",
+                "reason": "Controle de peças e alertas depende de dados padronizados.",
+                "priority": "now",
+                "mdmKind": "entity"
+              },
+              {
+                "signal": "invoiceMasterData",
+                "title": "MDM de Fatura",
+                "reason": "Faturamento exige registros consistentes vinculados à OS.",
+                "priority": "now",
+                "mdmKind": "entity"
+              }
+            ],
+            "metrics": [
+              {
+                "signal": "monthlyRevenueMetric",
+                "title": "Receita do mês",
+                "actor": "shopOwner",
+                "reason": "Indicador citado no dashboard inicial do MVP.",
+                "priority": "now"
+              },
+              {
+                "signal": "openServiceOrdersMetric",
+                "title": "OS abertas",
+                "actor": "shopOwner",
+                "reason": "Indicador essencial do painel.",
+                "priority": "now"
+              },
+              {
+                "signal": "upcomingMaintenanceMetric",
+                "title": "Manutenção prevista",
+                "actor": "shopOwner",
+                "reason": "Listagem de veículos com manutenção prevista no dashboard.",
+                "priority": "soon"
+              },
+              {
+                "signal": "inventoryLowStockMetric",
+                "title": "Itens com estoque baixo",
+                "actor": "shopOwner",
+                "reason": "Suporta alertas e priorização de reposição.",
+                "priority": "now"
+              }
+            ],
+            "usecases": [
+              {
+                "signal": "createServiceOrder",
+                "title": "Criar Ordem de Serviço",
+                "actor": "attendant",
+                "reason": "Ação principal de escrita com cálculo de total e relacionamento com cliente/veículo.",
+                "priority": "now"
+              },
+              {
+                "signal": "updateServiceOrderStatus",
+                "title": "Atualizar status da OS",
+                "actor": "attendant",
+                "reason": "Transições de ciclo de vida da OS.",
+                "priority": "now"
+              },
+              {
+                "signal": "addLaborItemToServiceOrder",
+                "title": "Adicionar mão de obra na OS",
+                "actor": "mechanic",
+                "reason": "Atualiza custos e total da OS.",
+                "priority": "now"
+              },
+              {
+                "signal": "addPartToServiceOrder",
+                "title": "Adicionar peça na OS",
+                "actor": "mechanic",
+                "reason": "Atualiza estoque e total da OS.",
+                "priority": "now"
+              },
+              {
+                "signal": "generateInvoiceFromServiceOrder",
+                "title": "Gerar fatura",
+                "actor": "shopOwner",
+                "reason": "Cria fatura a partir da OS e registra valores.",
+                "priority": "now"
+              },
+              {
+                "signal": "adjustInventoryLevels",
+                "title": "Ajustar estoque",
+                "actor": "shopOwner",
+                "reason": "Manter níveis e disparar alertas quando necessário.",
+                "priority": "now"
+              }
+            ]
+          },
+          "businessRisks": [
+            "Escopo de faturamento pode exigir emissão fiscal (NF-e/NFC-e), impactando regras e integrações.",
+            "Regras de alerta de estoque não definidas podem gerar excesso ou falta de reposição.",
+            "Sem definição do provedor de IA, desempenho e custos do agente podem variar."
+          ],
+          "missingContext": [
+            "Escopo do faturamento: controle interno versus emissão fiscal.",
+            "Regras de alerta de estoque: limite global ou configurável por item.",
+            "Provedor/modelo de IA para sugestões e estimativa de tempo."
+          ]
+        },
+        "questions": [
+          "O faturamento será apenas controle interno ou precisa emitir documentos fiscais (NF-e/NFC-e)?",
+          "Os alertas de estoque serão por limite mínimo global ou configuráveis por item?",
+          "Qual provedor/modelo de IA será utilizado para as sugestões de reparos e estimativa de tempo?"
+        ],
+        "trace": [
+          "Prompt inicial define entidades (Cliente, Veículo, OS, Peça/Estoque, Fatura), telas-chave e funcionalidade LLM.",
+          "Esclarecimento confirma papéis (dono, atendente, mecânico), foco em OS e histórico, e painel básico no MVP.",
+          "Requisitos incluem dashboard com métricas e suporte a pt-BR/en, com prioridade para controle de peças com alertas."
+        ]
+      }
+    },
+    "status": "completed",
+    "stepId": 29,
+    "interaction": null,
+    "nextSteps": null
+  }
+}

@@ -1,0 +1,88 @@
+{
+  "savedAt": "2026-06-08T23:15:10.569Z",
+  "agentName": "agentBlueprintReview",
+  "stepId": 10,
+  "planning": {
+    "planId": "plan-blueprint-review",
+    "dependsOn": [
+      "plan-solution-blueprint"
+    ],
+    "executionMode": "sequential",
+    "executionHost": "client"
+  },
+  "status": "waiting_after_prompt",
+  "payload": {
+    "type": "flexible",
+    "result": {
+      "toolName": "submitBlueprintReview",
+      "arguments": {
+        "status": "ok",
+        "result": {
+          "issues": [
+            {
+              "severity": "error",
+              "code": "metrics.missing_definitions",
+              "message": "Dashboard aceita métricas específicas, mas não há definições/entidades para openServiceOrdersMetric, monthlyRevenueMetric, upcomingMaintenanceMetric e inventoryLowStockMetric nem vínculo explícito com metricTableOps.",
+              "path": "result.artifactPlan.pages[0].references",
+              "evidence": [
+                "dashboardPage.references inclui openServiceOrdersMetric, monthlyRevenueMetric, upcomingMaintenanceMetric, inventoryLowStockMetric",
+                "metricTables só define metricTableOps"
+              ]
+            },
+            {
+              "severity": "error",
+              "code": "relationship.missing_repair_suggestion_links",
+              "message": "RepairSuggestion não possui relacionamentos declarados com Vehicle ou ServiceOrder, embora o caso de uso dependa dessas entidades.",
+              "path": "result.relationships",
+              "evidence": [
+                "userActions.requestRepairSuggestion.affectedEntities inclui RepairSuggestion, Vehicle, ServiceOrder",
+                "ontology.entities possui RepairSuggestion",
+                "relationships não incluem RepairSuggestion->Vehicle/ServiceOrder"
+              ]
+            },
+            {
+              "severity": "warning",
+              "code": "missing_forecast_generation_artifacts",
+              "message": "MaintenanceForecast é usado em regras e no dashboard, mas não há workflow/usecase/agent para gerar ou atualizar previsões.",
+              "path": "result.artifactPlan",
+              "evidence": [
+                "rules.ruleMaintenanceForecast aplica a MaintenanceForecast",
+                "artifactPlan.pages.dashboardPage.references inclui upcomingMaintenanceMetric e MaintenanceForecast em viewDashboard.affectedEntities",
+                "não há workflow/agent/usecaseEntities para MaintenanceForecast"
+              ]
+            },
+            {
+              "severity": "warning",
+              "code": "capability.coverage.customer_vehicle_crud",
+              "message": "ManageCustomers e ManageVehicles não têm artefatos explícitos para criação/edição (ex.: página/formulário ou workflow). O histórico pode não cobrir CRUD completo.",
+              "path": "result.coverage",
+              "evidence": [
+                "coverage.manageCustomers coberto por customerMasterData e vehicleHistoryPage",
+                "coverage.manageVehicles coberto por vehicleMasterData e vehicleHistoryPage",
+                "userActions incluem create/update para Customer e Vehicle"
+              ]
+            }
+          ],
+          "recommendedFixes": [
+            "Definir métricas individuais (openServiceOrdersMetric, monthlyRevenueMetric, upcomingMaintenanceMetric, inventoryLowStockMetric) e mapear cada uma ao metricTableOps ou criar tabelas específicas, ajustando referências do dashboard.",
+            "Adicionar relacionamentos para RepairSuggestion com Vehicle (e opcionalmente ServiceOrder) indicando origem do pedido e contexto.",
+            "Criar workflow/agent/usecase para geração e atualização de MaintenanceForecast (ex.: job baseado em histórico), ou remover a entidade/regra se não for escopo agora.",
+            "Adicionar página(s) ou workflow(s) para CRUD de Cliente/Veículo (ou explicitar que vehicleHistoryPage inclui formulários de criação/edição) e atualizar a cobertura."
+          ]
+        },
+        "questions": [],
+        "trace": [
+          "Revisão de blueprint focada em métricas, relacionamentos, cobertura de capacidades e uso de entidades de caso de uso.",
+          "Verifiquei referências do dashboard e entidades de métricas declaradas.",
+          "Validei relacionamentos para entidades usadas em ações de usuário.",
+          "Verifiquei presença de workflows/usecases para entidades com regras e uso no dashboard.",
+          "Conferi cobertura de capacidades com artefatos disponíveis."
+        ]
+      }
+    },
+    "status": "completed",
+    "stepId": 33,
+    "interaction": null,
+    "nextSteps": null
+  }
+}

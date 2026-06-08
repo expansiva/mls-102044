@@ -1,0 +1,385 @@
+{
+  "savedAt": "2026-06-08T23:20:01.652Z",
+  "agentName": "agentPlanMetricsIndex",
+  "stepId": 17,
+  "planning": {
+    "planId": "plan-metrics-index",
+    "dependsOn": [
+      "plan-table-definition"
+    ],
+    "executionMode": "sequential",
+    "executionHost": "client"
+  },
+  "status": "waiting_after_prompt",
+  "payload": {
+    "type": "flexible",
+    "result": {
+      "toolName": "submitMetricsIndex",
+      "arguments": {
+        "status": "ok",
+        "result": {
+          "metricsPlan": {
+            "enabled": true,
+            "storageEngine": "postgresTimescaleDB",
+            "moduleId": "repairBay",
+            "title": "Plano de Métricas Operacionais",
+            "description": "Métricas de ordens de serviço, faturamento, estoque e manutenção prevista para o painel do dono da oficina.",
+            "updateResponsibility": "layer_3_usecases"
+          },
+          "metricTables": [
+            {
+              "metricTableId": "serviceOrderMetrics",
+              "tableName": "service_order_metrics",
+              "title": "Métricas de Ordens de Serviço",
+              "purpose": "Acompanhar volume, status e valores das ordens de serviço ao longo do tempo.",
+              "storageEngine": "postgresTimescaleDB",
+              "sourceBaseTables": [
+                "service_order",
+                "labor_item",
+                "service_order_command_log"
+              ],
+              "sourceEntities": [
+                "ServiceOrder",
+                "LaborItem",
+                "ServiceOrderCommand"
+              ],
+              "sourceWriteEvents": [
+                "createServiceOrder",
+                "updateServiceOrderStatus",
+                "closeServiceOrder",
+                "addLaborItem"
+              ],
+              "timeColumn": "event_at",
+              "dimensions": [
+                {
+                  "dimensionId": "status",
+                  "column": "status",
+                  "type": "text",
+                  "description": "Status da OS no momento do evento"
+                },
+                {
+                  "dimensionId": "actorRole",
+                  "column": "actor_role",
+                  "type": "text",
+                  "description": "Perfil do usuário que executou a ação"
+                },
+                {
+                  "dimensionId": "vehicleId",
+                  "column": "vehicle_id",
+                  "type": "uuid",
+                  "description": "Veículo vinculado à OS"
+                }
+              ],
+              "measures": [
+                {
+                  "measureId": "orderCount",
+                  "column": "order_count",
+                  "type": "integer",
+                  "aggregation": "sum",
+                  "description": "Quantidade de ordens de serviço"
+                },
+                {
+                  "measureId": "totalValue",
+                  "column": "total_value",
+                  "type": "decimal",
+                  "aggregation": "sum",
+                  "unit": "BRL",
+                  "description": "Valor total acumulado das OS"
+                },
+                {
+                  "measureId": "laborTotal",
+                  "column": "labor_total",
+                  "type": "decimal",
+                  "aggregation": "sum",
+                  "unit": "BRL",
+                  "description": "Valor total de mão de obra"
+                }
+              ],
+              "aggregationWindows": [
+                "1 hour",
+                "1 day",
+                "1 week",
+                "1 month"
+              ],
+              "retentionPolicy": "1 ano",
+              "priority": "now",
+              "rulesApplied": [
+                "ruleServiceOrderStatus",
+                "ruleServiceOrderTotal"
+              ],
+              "reason": "Suportar indicadores de OS abertas, concluídas e tempo de execução no dashboard operacional."
+            },
+            {
+              "metricTableId": "inventoryMetrics",
+              "tableName": "inventory_metrics",
+              "title": "Métricas de Estoque",
+              "purpose": "Monitorar níveis de estoque, alertas de reposição e movimentações.",
+              "storageEngine": "postgresTimescaleDB",
+              "sourceBaseTables": [
+                "inventory_stock",
+                "part",
+                "inventory_adjustment_command_log"
+              ],
+              "sourceEntities": [
+                "InventoryStock",
+                "Part",
+                "InventoryAdjustmentCommand"
+              ],
+              "sourceWriteEvents": [
+                "adjustInventory",
+                "addPartToServiceOrder"
+              ],
+              "timeColumn": "event_at",
+              "dimensions": [
+                {
+                  "dimensionId": "partId",
+                  "column": "part_id",
+                  "type": "uuid",
+                  "description": "Peça relacionada"
+                },
+                {
+                  "dimensionId": "commandType",
+                  "column": "command_type",
+                  "type": "text",
+                  "description": "Tipo de movimentação"
+                },
+                {
+                  "dimensionId": "isLowStock",
+                  "column": "is_low_stock",
+                  "type": "boolean",
+                  "description": "Indicador de estoque abaixo do mínimo"
+                }
+              ],
+              "measures": [
+                {
+                  "measureId": "stockLevel",
+                  "column": "stock_level",
+                  "type": "decimal",
+                  "aggregation": "last",
+                  "unit": "units",
+                  "description": "Nível atual de estoque"
+                },
+                {
+                  "measureId": "lowStockCount",
+                  "column": "low_stock_count",
+                  "type": "integer",
+                  "aggregation": "sum",
+                  "description": "Contagem de itens com estoque baixo"
+                },
+                {
+                  "measureId": "adjustmentVolume",
+                  "column": "adjustment_volume",
+                  "type": "decimal",
+                  "aggregation": "sum",
+                  "unit": "units",
+                  "description": "Volume total de ajustes"
+                }
+              ],
+              "aggregationWindows": [
+                "1 hour",
+                "1 day",
+                "1 week"
+              ],
+              "retentionPolicy": "1 ano",
+              "priority": "now",
+              "rulesApplied": [
+                "ruleInventoryLowStock"
+              ],
+              "reason": "Suportar indicador de estoque baixo e rastrear consumo de peças."
+            },
+            {
+              "metricTableId": "invoiceMetrics",
+              "tableName": "invoice_metrics",
+              "title": "Métricas de Faturamento",
+              "purpose": "Consolidar receita e status de faturamento ao longo do tempo.",
+              "storageEngine": "postgresTimescaleDB",
+              "sourceBaseTables": [
+                "invoice",
+                "service_order"
+              ],
+              "sourceEntities": [
+                "Invoice",
+                "ServiceOrder",
+                "InvoiceCommand"
+              ],
+              "sourceWriteEvents": [
+                "generateInvoice",
+                "updateInvoiceStatus"
+              ],
+              "timeColumn": "event_at",
+              "dimensions": [
+                {
+                  "dimensionId": "invoiceStatus",
+                  "column": "invoice_status",
+                  "type": "text",
+                  "description": "Status da fatura"
+                },
+                {
+                  "dimensionId": "serviceOrderId",
+                  "column": "service_order_id",
+                  "type": "uuid",
+                  "description": "OS vinculada"
+                }
+              ],
+              "measures": [
+                {
+                  "measureId": "invoiceCount",
+                  "column": "invoice_count",
+                  "type": "integer",
+                  "aggregation": "sum",
+                  "description": "Quantidade de faturas"
+                },
+                {
+                  "measureId": "totalRevenue",
+                  "column": "total_revenue",
+                  "type": "decimal",
+                  "aggregation": "sum",
+                  "unit": "BRL",
+                  "description": "Receita total faturada"
+                }
+              ],
+              "aggregationWindows": [
+                "1 day",
+                "1 week",
+                "1 month"
+              ],
+              "retentionPolicy": "2 anos",
+              "priority": "now",
+              "rulesApplied": [
+                "ruleInvoiceFromServiceOrder"
+              ],
+              "reason": "Suportar indicador de receita mensal no dashboard operacional."
+            },
+            {
+              "metricTableId": "maintenanceForecastMetrics",
+              "tableName": "maintenance_forecast_metrics",
+              "title": "Métricas de Manutenção Prevista",
+              "purpose": "Rastrear previsões de manutenção e veículos com serviços pendentes futuros.",
+              "storageEngine": "postgresTimescaleDB",
+              "sourceBaseTables": [
+                "maintenance_forecast",
+                "vehicle"
+              ],
+              "sourceEntities": [
+                "MaintenanceForecast",
+                "Vehicle",
+                "MaintenanceForecastCommand"
+              ],
+              "sourceWriteEvents": [
+                "maintenanceForecastCommand"
+              ],
+              "timeColumn": "event_at",
+              "dimensions": [
+                {
+                  "dimensionId": "forecastStatus",
+                  "column": "forecast_status",
+                  "type": "text",
+                  "description": "Status da previsão"
+                },
+                {
+                  "dimensionId": "vehicleId",
+                  "column": "vehicle_id",
+                  "type": "uuid",
+                  "description": "Veículo da previsão"
+                },
+                {
+                  "dimensionId": "forecastType",
+                  "column": "forecast_type",
+                  "type": "text",
+                  "description": "Tipo de manutenção prevista"
+                }
+              ],
+              "measures": [
+                {
+                  "measureId": "forecastCount",
+                  "column": "forecast_count",
+                  "type": "integer",
+                  "aggregation": "sum",
+                  "description": "Quantidade de previsões ativas"
+                },
+                {
+                  "measureId": "upcomingCount",
+                  "column": "upcoming_count",
+                  "type": "integer",
+                  "aggregation": "sum",
+                  "description": "Contagem de manutenções previstas para o período"
+                }
+              ],
+              "aggregationWindows": [
+                "1 day",
+                "1 week",
+                "1 month"
+              ],
+              "retentionPolicy": "1 ano",
+              "priority": "now",
+              "rulesApplied": [
+                "ruleMaintenanceForecast"
+              ],
+              "reason": "Suportar indicador de manutenção prevista no dashboard."
+            }
+          ],
+          "dashboardPages": [
+            {
+              "metricDashboardId": "shopOwnerMetricsDashboard",
+              "title": "Dashboard de métricas do dono da oficina",
+              "description": "Painel operacional com indicadores principais de OS, receita, estoque e manutenção prevista.",
+              "actor": "shopOwner",
+              "accessPolicy": "admin-only",
+              "priority": "now",
+              "sources": [
+                "serviceOrderMetrics",
+                "inventoryMetrics",
+                "invoiceMetrics",
+                "maintenanceForecastMetrics"
+              ],
+              "widgets": [
+                {
+                  "widgetId": "openServiceOrdersWidget",
+                  "title": "OS Abertas",
+                  "metricId": "orderCount",
+                  "type": "counter",
+                  "sourceMetricTable": "serviceOrderMetrics"
+                },
+                {
+                  "widgetId": "monthlyRevenueWidget",
+                  "title": "Receita do Mês",
+                  "metricId": "totalRevenue",
+                  "type": "currency",
+                  "sourceMetricTable": "invoiceMetrics"
+                },
+                {
+                  "widgetId": "upcomingMaintenanceWidget",
+                  "title": "Manutenções Previstas",
+                  "metricId": "upcomingCount",
+                  "type": "counter",
+                  "sourceMetricTable": "maintenanceForecastMetrics"
+                },
+                {
+                  "widgetId": "inventoryLowStockWidget",
+                  "title": "Peças em Estoque Baixo",
+                  "metricId": "lowStockCount",
+                  "type": "counter",
+                  "sourceMetricTable": "inventoryMetrics"
+                }
+              ],
+              "rulesApplied": [
+                "ruleRoleAccess"
+              ]
+            }
+          ]
+        },
+        "questions": [],
+        "trace": [
+          "Criadas tabelas de métricas separadas para OS, estoque, faturamento e manutenção prevista.",
+          "Configurado timeColumn e sourceWriteEvents derivados das tabelas transacionais e comandos aprovados.",
+          "Dashboard vinculado ao actor shopOwner com acesso restrito.",
+          "Métricas atualizadas exclusivamente pela camada layer_3_usecases."
+        ]
+      }
+    },
+    "status": "completed",
+    "stepId": 41,
+    "interaction": null,
+    "nextSteps": null
+  }
+}

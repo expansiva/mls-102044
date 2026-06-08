@@ -1,0 +1,123 @@
+{
+  "savedAt": "2026-06-08T23:28:22.839Z",
+  "agentName": "agentPlanPageDefinition",
+  "stepId": 59,
+  "planning": null,
+  "status": "waiting_after_prompt",
+  "payload": {
+    "type": "flexible",
+    "result": {
+      "toolName": "submitPageDefinitionPlan",
+      "arguments": {
+        "status": "ok",
+        "result": {
+          "pageDefinition": {
+            "pageId": "operationalDashboard",
+            "pageName": "Dashboard operacional",
+            "actor": "shopOwner",
+            "purpose": "Visualizar indicadores operacionais do dia a dia.",
+            "capabilities": [
+              "dashboardInsights"
+            ],
+            "flowRefs": {
+              "experienceFlows": [],
+              "entityLifecycles": [],
+              "taskWorkflows": [],
+              "automations": [
+                "maintenanceForecastWorkflow"
+              ]
+            },
+            "pluginRefs": [],
+            "mdmRefs": [],
+            "pageInputs": [],
+            "navigationRefs": [],
+            "sections": [
+              {
+                "sectionName": "Resumo operacional",
+                "mode": "view",
+                "organisms": [
+                  {
+                    "organismName": "cardsResumoOperacional",
+                    "purpose": "Exibir indicadores operacionais consolidados.",
+                    "userActions": [
+                      "viewDashboard"
+                    ],
+                    "requiredEntities": [],
+                    "readsFields": [
+                      "openServiceOrders",
+                      "monthlyRevenue",
+                      "upcomingMaintenance",
+                      "lowStockCount"
+                    ],
+                    "writesFields": [],
+                    "rulesApplied": [
+                      "ruleRoleAccess"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "bffCommands": [
+            {
+              "commandName": "getOperationalSummary",
+              "purpose": "Carregar indicadores operacionais",
+              "kind": "query",
+              "input": [],
+              "output": [
+                {
+                  "name": "openServiceOrders",
+                  "type": "number"
+                },
+                {
+                  "name": "monthlyRevenue",
+                  "type": "number"
+                },
+                {
+                  "name": "upcomingMaintenance",
+                  "type": "number"
+                },
+                {
+                  "name": "lowStockCount",
+                  "type": "number"
+                }
+              ],
+              "readsEntities": [],
+              "writesEntities": [],
+              "readsTables": [
+                "service_order_metrics",
+                "inventory_metrics",
+                "invoice_metrics",
+                "maintenance_forecast_metrics"
+              ],
+              "writesTables": [],
+              "usecaseRefs": [
+                "viewDashboardMetrics"
+              ],
+              "layerContract": {
+                "controllerLayer": "layer_2_controllers",
+                "mustCallLayer": "layer_3_usecases",
+                "directTableAccessForbidden": true
+              },
+              "rulesApplied": [
+                "ruleRoleAccess"
+              ]
+            }
+          ]
+        },
+        "questions": [],
+        "trace": [
+          "pageSelector operationalDashboard",
+          "capability dashboardInsights",
+          "usecase viewDashboardMetrics",
+          "bffCommandHint getOperationalSummary",
+          "rule ruleRoleAccess"
+        ]
+      }
+    },
+    "status": "completed",
+    "stepId": 63,
+    "interaction": null,
+    "nextSteps": null
+  }
+}
