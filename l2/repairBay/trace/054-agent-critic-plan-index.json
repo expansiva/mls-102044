@@ -1,0 +1,51 @@
+{
+  "savedAt": "2026-06-08T23:27:27.922Z",
+  "agentName": "agentCriticPlanIndex",
+  "stepId": 54,
+  "planning": {
+    "planId": "plan-index-critic:pageIndex:1",
+    "dependsOn": [
+      "plan-page-index"
+    ],
+    "executionMode": "sequential",
+    "executionHost": "client"
+  },
+  "status": "waiting_after_prompt",
+  "payload": {
+    "type": "flexible",
+    "result": {
+      "toolName": "submitPlanIndexCritique",
+      "arguments": {
+        "status": "needs_input",
+        "result": {
+          "approved": false,
+          "errors": [
+            {
+              "code": "WRONG_ACTOR",
+              "message": "A página 'serviceOrderDetail' está atribuída ao ator 'attendant', mas o artefato aprovado 'Detalhe da Ordem de Serviço' define o actor como 'mechanic'. O ator 'mechanic' possui a capacidade 'serviceOrderExecution' (prioridade now) que exige interação do usuário, porém não existe nenhuma página atribuída a esse ator no índice.",
+              "path": "pages[6].actor"
+            }
+          ],
+          "warnings": []
+        },
+        "questions": [
+          "O ator 'mechanic' não possui páginas atribuídas no índice. O artefato aprovado 'Detalhe da Ordem de Serviço' prevê actor 'mechanic'. A ação 'addLaborItem' e 'addPartToServiceOrder' são do mecânico. Deve-se criar uma página dedicada ao mecânico para execução da OS, ou a página 'serviceOrderDetail' deve ter seu actor alterado para 'mechanic' (e o atendente teria outra página de detalhe)?"
+        ],
+        "trace": [
+          "Verificação de atores: todos os atores das páginas são actorIds válidos do plano final (attendant, shopOwner).",
+          "Verificação de capacidades 'now': todas as capacidades possuem páginas associadas, exceto que 'serviceOrderExecution' (mechanic) está vinculada a página de actor 'attendant'.",
+          "Verificação de artefatos aprovados: 'Detalhe da Ordem de Serviço' aprovado para 'mechanic' não encontrado com actor correto.",
+          "Verificação de flowRefs: todas as referências apontam para workflows existentes.",
+          "Verificação de navigationRefs: todas as referências de navegação apontam para páginas existentes.",
+          "Verificação de metricRefs: todas as métricas referenciadas existem.",
+          "Verificação de páginas inventadas: nenhuma página claramente inventada.",
+          "Verificação de dashboard de métricas: initialMetricsRequested=false, mas métricas aprovadas existem e o dashboard está presente com actor correto."
+        ]
+      }
+    },
+    "status": "completed",
+    "stepId": 55,
+    "interaction": null,
+    "nextSteps": null
+  }
+}

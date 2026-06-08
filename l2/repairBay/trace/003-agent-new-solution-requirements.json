@@ -1,0 +1,89 @@
+{
+  "savedAt": "2026-06-08T23:09:07.261Z",
+  "agentName": "agentNewSolutionRequirements",
+  "stepId": 3,
+  "planning": {
+    "planId": "org-requirements",
+    "dependsOn": [],
+    "executionMode": "sequential",
+    "executionHost": "client"
+  },
+  "status": "waiting_after_prompt",
+  "payload": {
+    "type": "clarification",
+    "json": {
+      "userLanguage": "pt-BR",
+      "title": "Esclarecimento 1/2",
+      "userPrompt": "Gere um app profissional chamado **RepairBay** para oficinas mecânicas independentes.\nEntidades principais: Cliente, Veículo (marca/modelo/ano/placa/VIN, cliente), Ordem de Serviço (status, itens de mão de obra, peças usadas, total), Peça/Estoque, Fatura.\nTelas chave: Dashboard (OS abertas, receita do mês, veículos com manutenção prevista), Histórico completo do Veículo + Cliente, Criação e acompanhamento de Ordem de Serviço, Controle de peças com alertas, Faturamento.\nFuncionalidade LLM: IA que sugere reparos comuns para um modelo/ano de veículo ou estima tempo de mão de obra a partir da descrição do serviço.\nFoco: Histórico do veículo, custo preciso do serviço e fluxo rápido de OS — muito específico para oficina mecânica.\nlinguagens: en, pt-br",
+      "questions": {
+        "languages": {
+          "type": "open",
+          "question": "Quais idiomas devem estar disponíveis no MVP?",
+          "answer": "pt-BR e en"
+        },
+        "moduleName": {
+          "type": "open",
+          "question": "Qual o nome do módulo/solução a criar?",
+          "answer": "RepairBay"
+        },
+        "roles": {
+          "type": "open",
+          "question": "Quais papéis de usuários principais vão usar o app?",
+          "answer": "Dono da oficina, atendente e mecânico"
+        },
+        "publicTarget": {
+          "type": "open",
+          "question": "Qual o público-alvo principal?",
+          "answer": "Oficinas mecânicas independentes de pequeno e médio porte"
+        },
+        "mainGoal": {
+          "type": "open",
+          "question": "Qual o objetivo principal do MVP?",
+          "answer": "Organizar OS e histórico de veículos com custos precisos"
+        },
+        "initialMetricsDashboard": {
+          "type": "select",
+          "question": "Você quer métricas operacionais básicas e um painel administrativo já na primeira versão?",
+          "answer": "basic",
+          "options": [
+            {
+              "id": "basic",
+              "label": "Sim, painel básico no MVP"
+            },
+            {
+              "id": "later",
+              "label": "Depois, em uma próxima versão"
+            },
+            {
+              "id": "none",
+              "label": "Não precisa de painel"
+            }
+          ]
+        },
+        "visualStyle": {
+          "type": "open",
+          "question": "Há alguma preferência de estilo visual/branding?",
+          "answer": "Visual profissional e moderno, cores sóbrias"
+        },
+        "openQuestion1": {
+          "type": "open",
+          "question": "Qual deve ser o fluxo mais crítico da primeira versão?",
+          "answer": "Criação e acompanhamento rápido de OS"
+        },
+        "openQuestion2": {
+          "type": "open",
+          "question": "Há alguma prioridade entre peças/estoque e faturamento no MVP?",
+          "answer": "Dar prioridade ao controle de peças com alertas"
+        }
+      },
+      "legends": [
+        "Este é o primeiro esclarecimento rápido para alinhar o MVP.",
+        "O detalhamento completo do planejamento vem nas próximas etapas."
+      ]
+    },
+    "status": "pending",
+    "stepId": 27,
+    "interaction": null,
+    "nextSteps": null
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "savedAt": "2026-06-08T23:24:06.882Z",
+  "agentName": "agentCriticPlanIndex",
+  "stepId": 46,
+  "planning": {
+    "planId": "plan-index-critic:usecasePlan:1",
+    "dependsOn": [
+      "plan-usecase-entities"
+    ],
+    "executionMode": "sequential",
+    "executionHost": "client"
+  },
+  "status": "waiting_after_prompt",
+  "payload": {
+    "type": "flexible",
+    "result": {
+      "toolName": "submitPlanIndexCritique",
+      "arguments": {
+        "status": "needs_input",
+        "result": {
+          "approved": false,
+          "errors": [
+            {
+              "code": "lifecycle.transition.missing",
+              "message": "Falta usecase para transição de cancelamento da OS. A regra ruleServiceOrderStatus prevê o estado 'cancelada' no ciclo de vida.",
+              "path": "usecases"
+            },
+            {
+              "code": "usecase.read.missing",
+              "message": "Não há usecase de leitura para repairSuggestion. A entidade permite 'read' e o mecânico precisa consultar sugestões geradas pela IA na página de detalhe da OS.",
+              "path": "usecases"
+            },
+            {
+              "code": "usecase.read.missing",
+              "message": "Não há usecase de leitura para maintenanceForecast. A entidade permite 'read' e o dashboard/histórico precisam exibir previsões de manutenção.",
+              "path": "usecases"
+            },
+            {
+              "code": "usecase.read.missing",
+              "message": "Não há usecase de leitura de laborItem por serviceOrderId. A página 'Detalhe da Ordem de Serviço' precisa listar os itens de mão de obra da OS, e viewVehicleHistory apenas agrega por veículo.",
+              "path": "usecases"
+            }
+          ],
+          "warnings": [
+            {
+              "code": "usecase.entity.mismatch",
+              "message": "generateInvoice e updateInvoiceStatus referenciam serviceOrderCommandUsecaseEntity em vez de uma entidade específica de comando de fatura (ex: invoiceCommandUsecaseEntity).",
+              "path": "usecases.generateInvoice.inputEntities"
+            },
+            {
+              "code": "usecase.read.missing",
+              "message": "Faltam usecases de leitura/listagem para entidades MDM (ServiceOrder, Invoice, InventoryStock, Part, Customer, Vehicle) necessárias às páginas aprovadas, a menos que sejam responsabilidade do MDM.",
+              "path": "usecases"
+            },
+            {
+              "code": "usecase.update.missing",
+              "message": "Não há usecase de atualização para laborItem, embora a entidade permita 'update'.",
+              "path": "usecases"
+            },
+            {
+              "code": "usecase.update.missing",
+              "message": "Não há usecase de atualização para repairSuggestion, embora a entidade permita 'update'.",
+              "path": "usecases"
+            }
+          ]
+        },
+        "questions": [],
+        "trace": [
+          "Verificou cobertura de escrita em tabelas module-owned e métricas",
+          "Verificou transições de ciclo de vida da OS",
+          "Verificou existência de usecases de leitura para entidades module-owneds",
+          "Verificou consistência de entidades de entrada/saída dos usecases",
+          "Verificou acesso layer_3_usecases a tabelas externas"
+        ]
+      }
+    },
+    "status": "completed",
+    "stepId": 47,
+    "interaction": null,
+    "nextSteps": null
+  }
+}

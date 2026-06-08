@@ -1,0 +1,327 @@
+{
+  "savedAt": "2026-06-08T23:13:24.012Z",
+  "agentName": "agentRecommendImplementations",
+  "stepId": 6,
+  "planning": {
+    "planId": "req-recommend-implementations",
+    "dependsOn": [
+      "req-discover-scope"
+    ],
+    "executionMode": "sequential",
+    "executionHost": "client"
+  },
+  "status": "waiting_after_prompt",
+  "payload": {
+    "type": "flexible",
+    "result": {
+      "toolName": "submitImplementationRecommendations",
+      "arguments": {
+        "status": "ok",
+        "result": {
+          "recommendations": [
+            {
+              "recommendationId": "mdmCustomer",
+              "artifactType": "mdm",
+              "title": "MDM de Cliente",
+              "description": "Modelar dados mestres de Cliente com contato, identificação e vínculo com veículos e OS.",
+              "priority": "now",
+              "defaultPriority": "now",
+              "reason": "Cliente é entidade central para histórico e faturamento; padronização é obrigatória.",
+              "requiresClientDecision": false,
+              "dependencies": []
+            },
+            {
+              "recommendationId": "mdmVehicle",
+              "artifactType": "mdm",
+              "title": "MDM de Veículo",
+              "description": "Modelar veículo com marca/modelo/ano/placa/VIN e relação com cliente e OS.",
+              "priority": "now",
+              "defaultPriority": "now",
+              "reason": "Veículo é o núcleo do histórico e manutenção prevista.",
+              "requiresClientDecision": false,
+              "dependencies": []
+            },
+            {
+              "recommendationId": "mdmServiceOrder",
+              "artifactType": "mdm",
+              "title": "MDM de Ordem de Serviço",
+              "description": "Modelar OS com status, itens de mão de obra, peças usadas e total.",
+              "priority": "now",
+              "defaultPriority": "now",
+              "reason": "Fluxo rápido de OS e custo preciso dependem da OS bem definida.",
+              "requiresClientDecision": false,
+              "dependencies": []
+            },
+            {
+              "recommendationId": "mdmPartInventory",
+              "artifactType": "mdm",
+              "title": "MDM de Peça/Estoque",
+              "description": "Modelar peça, estoque, custo, fornecedores básicos e níveis mínimos.",
+              "priority": "now",
+              "defaultPriority": "now",
+              "reason": "Controle de peças com alertas requer estrutura consistente.",
+              "requiresClientDecision": false,
+              "dependencies": []
+            },
+            {
+              "recommendationId": "mdmInvoice",
+              "artifactType": "mdm",
+              "title": "MDM de Fatura",
+              "description": "Modelar fatura vinculada à OS com valores, status e datas.",
+              "priority": "now",
+              "defaultPriority": "now",
+              "reason": "Faturamento é requisito do MVP.",
+              "requiresClientDecision": false,
+              "dependencies": []
+            },
+            {
+              "recommendationId": "usecaseEntityServiceOrderOps",
+              "artifactType": "usecaseEntity",
+              "title": "Entidades de caso de uso da OS",
+              "description": "Definir entidades de caso de uso para criação/atualização de OS, itens de mão de obra, peças e cálculo de total.",
+              "priority": "now",
+              "defaultPriority": "now",
+              "reason": "Há operações de escrita e atualização de custos e status.",
+              "requiresClientDecision": false,
+              "dependencies": [
+                "mdmServiceOrder",
+                "mdmPartInventory",
+                "mdmVehicle",
+                "mdmCustomer"
+              ]
+            },
+            {
+              "recommendationId": "usecaseEntityInventoryAdjust",
+              "artifactType": "usecaseEntity",
+              "title": "Entidades de caso de uso de estoque",
+              "description": "Definir regras e entidades para ajuste de estoque e disparo de alertas.",
+              "priority": "now",
+              "defaultPriority": "now",
+              "reason": "Controle de peças com alertas exige comandos e sinais de backend.",
+              "requiresClientDecision": false,
+              "dependencies": [
+                "mdmPartInventory"
+              ]
+            },
+            {
+              "recommendationId": "workflowServiceOrder",
+              "artifactType": "workflow",
+              "title": "Workflow de Ordem de Serviço",
+              "description": "Fluxo de criação, execução, atualização de status e fechamento de OS.",
+              "priority": "now",
+              "defaultPriority": "now",
+              "reason": "OS tem ciclo de vida e transições claras.",
+              "requiresClientDecision": false,
+              "dependencies": [
+                "usecaseEntityServiceOrderOps"
+              ]
+            },
+            {
+              "recommendationId": "workflowInventoryAlert",
+              "artifactType": "workflow",
+              "title": "Workflow de Alerta de Estoque",
+              "description": "Regras de checagem de estoque mínimo e acionamento de alertas.",
+              "priority": "now",
+              "defaultPriority": "now",
+              "reason": "Alertas são prioridade do MVP.",
+              "requiresClientDecision": true,
+              "dependencies": [
+                "usecaseEntityInventoryAdjust"
+              ]
+            },
+            {
+              "recommendationId": "workflowBilling",
+              "artifactType": "workflow",
+              "title": "Workflow de Faturamento",
+              "description": "Geração de fatura a partir da OS e acompanhamento de status.",
+              "priority": "soon",
+              "defaultPriority": "soon",
+              "reason": "Faturamento é necessário e depende do escopo fiscal.",
+              "requiresClientDecision": true,
+              "dependencies": [
+                "mdmInvoice",
+                "mdmServiceOrder"
+              ]
+            },
+            {
+              "recommendationId": "pageDashboard",
+              "artifactType": "page",
+              "title": "Dashboard operacional",
+              "description": "Tela com OS abertas, receita do mês e manutenção prevista.",
+              "priority": "now",
+              "defaultPriority": "now",
+              "reason": "Painel básico foi aceito para o MVP.",
+              "requiresClientDecision": false,
+              "dependencies": [
+                "metricTableOps",
+                "shopOwnerDashboardMetrics"
+              ]
+            },
+            {
+              "recommendationId": "pageVehicleHistory",
+              "artifactType": "page",
+              "title": "Histórico de Veículo e Cliente",
+              "description": "Tela com histórico completo de serviços, peças e custos por veículo/cliente.",
+              "priority": "now",
+              "defaultPriority": "now",
+              "reason": "Histórico é foco central do produto.",
+              "requiresClientDecision": false,
+              "dependencies": [
+                "mdmVehicle",
+                "mdmCustomer",
+                "mdmServiceOrder"
+              ]
+            },
+            {
+              "recommendationId": "pageServiceOrderList",
+              "artifactType": "page",
+              "title": "Lista de Ordens de Serviço",
+              "description": "Listagem e criação rápida de OS com filtros por status.",
+              "priority": "now",
+              "defaultPriority": "now",
+              "reason": "Fluxo rápido de OS é requisito.",
+              "requiresClientDecision": false,
+              "dependencies": [
+                "workflowServiceOrder"
+              ]
+            },
+            {
+              "recommendationId": "pageServiceOrderDetail",
+              "artifactType": "page",
+              "title": "Detalhe da Ordem de Serviço",
+              "description": "Registro de mão de obra, peças usadas, status e total.",
+              "priority": "now",
+              "defaultPriority": "now",
+              "reason": "Execução de serviços e cálculo de custos precisam de interface dedicada.",
+              "requiresClientDecision": false,
+              "dependencies": [
+                "workflowServiceOrder",
+                "usecaseEntityServiceOrderOps"
+              ]
+            },
+            {
+              "recommendationId": "pagePartsInventory",
+              "artifactType": "page",
+              "title": "Controle de Peças/Estoque",
+              "description": "Gestão de peças, níveis de estoque e alertas.",
+              "priority": "now",
+              "defaultPriority": "now",
+              "reason": "Prioridade declarada para controle de peças com alertas.",
+              "requiresClientDecision": false,
+              "dependencies": [
+                "mdmPartInventory",
+                "workflowInventoryAlert"
+              ]
+            },
+            {
+              "recommendationId": "pageBilling",
+              "artifactType": "page",
+              "title": "Faturamento",
+              "description": "Tela para gerar e acompanhar faturas por OS.",
+              "priority": "now",
+              "defaultPriority": "now",
+              "reason": "Faturamento é parte das telas-chave.",
+              "requiresClientDecision": true,
+              "dependencies": [
+                "workflowBilling",
+                "mdmInvoice"
+              ]
+            },
+            {
+              "recommendationId": "agentRepairSuggestion",
+              "artifactType": "agent",
+              "title": "Agente de IA para sugestões de reparos e tempo",
+              "description": "Agente LLM para sugerir reparos comuns por modelo/ano e estimar tempo de mão de obra.",
+              "priority": "soon",
+              "defaultPriority": "soon",
+              "reason": "Funcionalidade de IA é desejada após o núcleo operacional.",
+              "requiresClientDecision": true,
+              "dependencies": [
+                "mdmVehicle",
+                "mdmServiceOrder"
+              ]
+            },
+            {
+              "recommendationId": "horizontalI18n",
+              "artifactType": "horizontalModule",
+              "title": "Internacionalização",
+              "description": "Suporte a pt-BR e en em UI e mensagens de domínio.",
+              "priority": "now",
+              "defaultPriority": "now",
+              "reason": "Bilíngue é requisito explícito.",
+              "requiresClientDecision": false,
+              "dependencies": []
+            },
+            {
+              "recommendationId": "horizontalAuth",
+              "artifactType": "horizontalModule",
+              "title": "Autenticação e perfis",
+              "description": "Perfis de dono, atendente e mecânico com permissões distintas.",
+              "priority": "now",
+              "defaultPriority": "now",
+              "reason": "Papéis foram definidos e exigem controle de acesso.",
+              "requiresClientDecision": false,
+              "dependencies": []
+            },
+            {
+              "recommendationId": "notificationInventory",
+              "artifactType": "horizontalModule",
+              "title": "Notificações operacionais",
+              "description": "Canal para alertas de estoque baixo e eventos críticos de OS.",
+              "priority": "soon",
+              "defaultPriority": "soon",
+              "reason": "Alertas requerem comunicação operacional consistente.",
+              "requiresClientDecision": true,
+              "dependencies": [
+                "workflowInventoryAlert"
+              ]
+            },
+            {
+              "recommendationId": "metricTableOps",
+              "artifactType": "metricTable",
+              "title": "Tabela de métricas operacionais",
+              "description": "Tabela para agregações de OS abertas, receita mensal e estoque baixo.",
+              "priority": "now",
+              "defaultPriority": "now",
+              "reason": "Painel básico do MVP requer métricas consolidadas.",
+              "requiresClientDecision": false,
+              "dependencies": [
+                "mdmServiceOrder",
+                "mdmInvoice",
+                "mdmPartInventory"
+              ]
+            },
+            {
+              "recommendationId": "shopOwnerDashboardMetrics",
+              "artifactType": "metricDashboard",
+              "title": "Dashboard de métricas do dono da oficina",
+              "description": "Painel com OS abertas, receita do mês e itens com estoque baixo.",
+              "priority": "now",
+              "defaultPriority": "now",
+              "reason": "MVP inclui painel básico com indicadores principais.",
+              "requiresClientDecision": false,
+              "dependencies": [
+                "metricTableOps"
+              ]
+            }
+          ]
+        },
+        "questions": [
+          "O faturamento será apenas controle interno ou precisa emitir documentos fiscais (NF-e/NFC-e)?",
+          "Os alertas de estoque serão por limite mínimo global ou configuráveis por item?",
+          "Qual provedor/modelo de IA será utilizado para as sugestões de reparos e estimativa de tempo?"
+        ],
+        "trace": [
+          "Escopo confirma OS, estoque, faturamento e histórico de veículo como núcleo do produto.",
+          "Papéis definidos (dono, atendente, mecânico) exigem autenticação e permissões.",
+          "Painel básico do MVP foi aceito, exigindo métricas, tabela de métricas e dashboard.",
+          "Há operações de escrita e atualização (OS, estoque, fatura), demandando entidades de caso de uso e workflows."
+        ]
+      }
+    },
+    "status": "completed",
+    "stepId": 30,
+    "interaction": null,
+    "nextSteps": null
+  }
+}

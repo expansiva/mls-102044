@@ -1,0 +1,281 @@
+{
+  "schemaVersion": "2026-06-06",
+  "artifactType": "indexCheckpoint",
+  "indexName": "workflowIndex",
+  "moduleName": "repairBay",
+  "status": "frozen",
+  "approvedAt": "2026-06-08T23:25:16.363Z",
+  "source": {
+    "agentName": "agentPlanWorkflowIndex",
+    "stepId": 49,
+    "planId": "plan-index-critic:workflowIndex:1"
+  },
+  "healthReport": {
+    "localErrors": [],
+    "localWarnings": [
+      {
+        "severity": "warning",
+        "code": "workflow.usecaseRef.unknown",
+        "message": "workflow serviceOrderWorkflow references unknown usecase serviceOrderUsecaseEntities",
+        "path": "workflows[0]"
+      },
+      {
+        "severity": "warning",
+        "code": "workflow.usecaseRef.unknown",
+        "message": "workflow inventoryAlertWorkflow references unknown usecase inventoryAdjustUsecaseEntities",
+        "path": "workflows[1]"
+      },
+      {
+        "severity": "warning",
+        "code": "workflow.usecaseRef.unknown",
+        "message": "workflow billingWorkflow references unknown usecase invoiceUsecaseEntities",
+        "path": "workflows[2]"
+      },
+      {
+        "severity": "warning",
+        "code": "workflow.usecaseRef.unknown",
+        "message": "workflow maintenanceForecastWorkflow references unknown usecase maintenanceForecastUsecaseEntities",
+        "path": "workflows[3]"
+      }
+    ],
+    "criticErrors": [],
+    "criticWarnings": [
+      {
+        "severity": "warning",
+        "code": "workflow.usecaseRef.unknown",
+        "message": "workflow serviceOrderWorkflow references unknown usecase serviceOrderUsecaseEntities",
+        "path": "workflows[0]"
+      },
+      {
+        "severity": "warning",
+        "code": "workflow.usecaseRef.unknown",
+        "message": "workflow inventoryAlertWorkflow references unknown usecase inventoryAdjustUsecaseEntities",
+        "path": "workflows[1]"
+      },
+      {
+        "severity": "warning",
+        "code": "workflow.usecaseRef.unknown",
+        "message": "workflow billingWorkflow references unknown usecase invoiceUsecaseEntities",
+        "path": "workflows[2]"
+      },
+      {
+        "severity": "warning",
+        "code": "workflow.usecaseRef.unknown",
+        "message": "workflow maintenanceForecastWorkflow references unknown usecase maintenanceForecastUsecaseEntities",
+        "path": "workflows[3]"
+      }
+    ],
+    "attempts": 1,
+    "notes": []
+  },
+  "index": {
+    "runId": "provider-tool-call",
+    "stepId": "17-plan-workflow-index",
+    "schemaVersion": "2026-06-02",
+    "status": "ok",
+    "result": {
+      "workflows": [
+        {
+          "workflowId": "serviceOrderWorkflow",
+          "title": "Fluxo da Ordem de Serviço",
+          "purpose": "Gerenciar o ciclo de vida da OS desde a abertura até o fechamento, coordenando ações entre atendente e mecânico, registrando mão de obra, peças e transições de status.",
+          "executionMode": "taskWorkflow",
+          "createsTask": true,
+          "priority": "now",
+          "actors": [
+            "attendant",
+            "mechanic"
+          ],
+          "relatedEntities": [
+            "ServiceOrder",
+            "LaborItem",
+            "Part",
+            "ServiceOrderCommand"
+          ],
+          "persistenceRefs": [
+            "serviceOrderCommandLog",
+            "laborItem"
+          ],
+          "usecaseRefs": [
+            "serviceOrderUsecaseEntities"
+          ],
+          "metricRefs": [
+            "serviceOrderMetrics"
+          ],
+          "relatedCapabilities": [
+            "serviceOrderLifecycle",
+            "serviceOrderExecution"
+          ],
+          "rulesApplied": [
+            "ruleServiceOrderStatus",
+            "ruleServiceOrderTotal",
+            "ruleRoleAccess"
+          ],
+          "implementationSuggestions": [
+            {
+              "suggestionId": "taskOnStatusChange",
+              "title": "Criar tarefa ao mudar status da OS",
+              "reason": "Quando a OS muda para 'em execução', notificar o mecânico; quando concluída, notificar o atendente para fechamento.",
+              "priority": "now"
+            },
+            {
+              "suggestionId": "validateStatusTransition",
+              "title": "Validar transições de status no backend",
+              "reason": "Garantir que a OS só avance no ciclo de vida permitido (aberta → execução → concluída → fechada/cancelada).",
+              "priority": "now"
+            }
+          ]
+        },
+        {
+          "workflowId": "inventoryAlertWorkflow",
+          "title": "Alerta de Estoque",
+          "purpose": "Monitorar níveis de peças e disparar alertas operacionais quando o estoque estiver abaixo do mínimo configurado, gerando ações para reposição.",
+          "executionMode": "automation",
+          "createsTask": true,
+          "priority": "now",
+          "actors": [
+            "shopOwner"
+          ],
+          "relatedEntities": [
+            "InventoryStock",
+            "Part",
+            "InventoryAdjustmentCommand"
+          ],
+          "persistenceRefs": [
+            "inventoryAdjustmentCommandLog"
+          ],
+          "usecaseRefs": [
+            "inventoryAdjustUsecaseEntities"
+          ],
+          "metricRefs": [
+            "inventoryMetrics"
+          ],
+          "relatedCapabilities": [
+            "partsInventoryControl"
+          ],
+          "rulesApplied": [
+            "ruleInventoryLowStock",
+            "ruleRoleAccess"
+          ],
+          "implementationSuggestions": [
+            {
+              "suggestionId": "autoTaskLowStock",
+              "title": "Gerar tarefa automática para estoque baixo",
+              "reason": "Quando o estoque ficar abaixo do mínimo, criar tarefa para o dono da oficina revisar e reabastecer.",
+              "priority": "now"
+            },
+            {
+              "suggestionId": "scheduledStockCheck",
+              "title": "Verificação agendada de estoque",
+              "reason": "Executar rotina diária para avaliar níveis de estoque e disparar alertas de forma proativa.",
+              "priority": "now"
+            }
+          ]
+        },
+        {
+          "workflowId": "billingWorkflow",
+          "title": "Fluxo de Faturamento",
+          "purpose": "Controlar a geração de faturas a partir de ordens de serviço concluídas e acompanhar seus status até a quitação.",
+          "executionMode": "entityLifecycle",
+          "createsTask": false,
+          "priority": "soon",
+          "actors": [
+            "shopOwner"
+          ],
+          "relatedEntities": [
+            "Invoice",
+            "ServiceOrder",
+            "InvoiceCommand"
+          ],
+          "persistenceRefs": [],
+          "usecaseRefs": [
+            "invoiceUsecaseEntities"
+          ],
+          "metricRefs": [
+            "invoiceMetrics"
+          ],
+          "relatedCapabilities": [
+            "billingManagement"
+          ],
+          "rulesApplied": [
+            "ruleInvoiceFromServiceOrder",
+            "ruleRoleAccess"
+          ],
+          "implementationSuggestions": [
+            {
+              "suggestionId": "invoiceFromClosedSO",
+              "title": "Permitir fatura apenas de OS concluída",
+              "reason": "Garantir que faturas sejam geradas apenas após a conclusão dos serviços, respeitando o vínculo obrigatório.",
+              "priority": "soon"
+            },
+            {
+              "suggestionId": "linkInvoiceToSO",
+              "title": "Vincular fatura à OS no workflow",
+              "reason": "Manter rastreabilidade entre a OS e o documento de cobrança para consultas futuras.",
+              "priority": "soon"
+            }
+          ]
+        },
+        {
+          "workflowId": "maintenanceForecastWorkflow",
+          "title": "Geração de Manutenção Prevista",
+          "purpose": "Gerar e atualizar previsões de manutenção com base no histórico de serviços do veículo, alimentando alertas no dashboard operacional.",
+          "executionMode": "automation",
+          "createsTask": false,
+          "priority": "soon",
+          "actors": [
+            "shopOwner"
+          ],
+          "relatedEntities": [
+            "MaintenanceForecast",
+            "Vehicle",
+            "ServiceOrder",
+            "MaintenanceForecastCommand"
+          ],
+          "persistenceRefs": [
+            "maintenanceForecast",
+            "maintenanceForecastCommandLog"
+          ],
+          "usecaseRefs": [
+            "maintenanceForecastUsecaseEntities"
+          ],
+          "metricRefs": [
+            "maintenanceForecastMetrics"
+          ],
+          "relatedCapabilities": [
+            "vehicleHistory",
+            "dashboardInsights"
+          ],
+          "rulesApplied": [
+            "ruleMaintenanceForecast",
+            "ruleRoleAccess"
+          ],
+          "implementationSuggestions": [
+            {
+              "suggestionId": "nightlyForecastRecalc",
+              "title": "Recalcular previsões diariamente",
+              "reason": "Processar histórico de OS fechadas para atualizar manutenções previstas e manter dados atualizados.",
+              "priority": "soon"
+            },
+            {
+              "suggestionId": "dashboardAlertForecast",
+              "title": "Exibir alerta no dashboard para manutenções próximas",
+              "reason": "Destacar veículos com manutenção prevista no painel operacional para ação proativa.",
+              "priority": "soon"
+            }
+          ]
+        }
+      ]
+    },
+    "questions": [
+      "O fechamento da OS deve exigir confirmação do mecânico ou apenas do atendente?",
+      "O alerta de estoque baixo deve gerar tarefa imediata para o dono ou apenas notificação assíncrona?"
+    ],
+    "trace": [
+      "Mapeiei os 4 workflows aprovados para modos de execução adequados (taskWorkflow, automation, entityLifecycle).",
+      "Vinculei tabelas de propriedade do módulo, entidades de caso de uso e métricas a cada workflow conforme dependências.",
+      "Defini createsTask true para workflows que coordenam equipe (OS) ou alertas operacionais (estoque).",
+      "Incluí sugestões de implementação com priorização now/soon alinhada ao plano de prioridades."
+    ]
+  }
+}

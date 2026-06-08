@@ -1,0 +1,844 @@
+{
+  "savedAt": "2026-06-08T23:26:23.864Z",
+  "agentName": "agentPlanPageIndex",
+  "stepId": 23,
+  "planning": {
+    "planId": "plan-page-index",
+    "dependsOn": [
+      "plan-metric-table-definition",
+      "plan-workflow-definition",
+      "plan-agents"
+    ],
+    "executionMode": "sequential",
+    "executionHost": "client"
+  },
+  "status": "waiting_after_prompt",
+  "payload": {
+    "type": "flexible",
+    "result": {
+      "toolName": "submitPageIndexPlan",
+      "arguments": {
+        "status": "ok",
+        "result": {
+          "pages": [
+            {
+              "pageId": "customerList",
+              "pageName": "Clientes",
+              "actor": "attendant",
+              "purpose": "Buscar e acessar cadastros de clientes.",
+              "capabilities": [
+                "manageCustomers"
+              ],
+              "flowRefs": {
+                "experienceFlows": [],
+                "entityLifecycles": [],
+                "taskWorkflows": [],
+                "automations": []
+              },
+              "pluginRefs": [],
+              "mdmRefs": [
+                "customer"
+              ],
+              "primaryUserActions": [
+                "createCustomer",
+                "updateCustomer"
+              ],
+              "pageInputHints": [],
+              "navigationRefs": [
+                {
+                  "direction": "outbound",
+                  "pageId": "customerDetail",
+                  "trigger": "Selecionar cliente"
+                }
+              ],
+              "persistenceHints": [],
+              "usecaseHints": [],
+              "metricRefs": [],
+              "rulesApplied": [
+                "ruleRoleAccess"
+              ],
+              "bffCommandHints": [
+                {
+                  "name": "listCustomers",
+                  "purpose": "Listar clientes com filtros",
+                  "input": "filtros de busca, paginação",
+                  "output": "lista de clientes com contatos"
+                }
+              ]
+            },
+            {
+              "pageId": "customerDetail",
+              "pageName": "Detalhe do cliente",
+              "actor": "attendant",
+              "purpose": "Cadastrar ou atualizar informações do cliente.",
+              "capabilities": [
+                "manageCustomers"
+              ],
+              "flowRefs": {
+                "experienceFlows": [],
+                "entityLifecycles": [],
+                "taskWorkflows": [],
+                "automations": []
+              },
+              "pluginRefs": [],
+              "mdmRefs": [
+                "customer"
+              ],
+              "primaryUserActions": [
+                "createCustomer",
+                "updateCustomer"
+              ],
+              "pageInputHints": [
+                "customerId opcional para edição"
+              ],
+              "navigationRefs": [
+                {
+                  "direction": "inbound",
+                  "pageId": "customerList",
+                  "trigger": "Abrir cliente ou criar novo"
+                }
+              ],
+              "persistenceHints": [],
+              "usecaseHints": [],
+              "metricRefs": [],
+              "rulesApplied": [
+                "ruleRoleAccess"
+              ],
+              "bffCommandHints": [
+                {
+                  "name": "getCustomer",
+                  "purpose": "Carregar dados do cliente",
+                  "input": "customerId",
+                  "output": "detalhes do cliente"
+                },
+                {
+                  "name": "saveCustomer",
+                  "purpose": "Criar ou atualizar cliente",
+                  "input": "dados do cliente",
+                  "output": "cliente salvo"
+                }
+              ]
+            },
+            {
+              "pageId": "vehicleList",
+              "pageName": "Veículos",
+              "actor": "attendant",
+              "purpose": "Buscar e acessar cadastros de veículos.",
+              "capabilities": [
+                "manageVehicles"
+              ],
+              "flowRefs": {
+                "experienceFlows": [],
+                "entityLifecycles": [],
+                "taskWorkflows": [],
+                "automations": []
+              },
+              "pluginRefs": [],
+              "mdmRefs": [
+                "vehicle",
+                "customer"
+              ],
+              "primaryUserActions": [
+                "createVehicle",
+                "updateVehicle"
+              ],
+              "pageInputHints": [],
+              "navigationRefs": [
+                {
+                  "direction": "outbound",
+                  "pageId": "vehicleDetail",
+                  "trigger": "Selecionar veículo"
+                }
+              ],
+              "persistenceHints": [],
+              "usecaseHints": [],
+              "metricRefs": [],
+              "rulesApplied": [
+                "ruleRoleAccess"
+              ],
+              "bffCommandHints": [
+                {
+                  "name": "listVehicles",
+                  "purpose": "Listar veículos com filtros",
+                  "input": "filtros, paginação",
+                  "output": "lista de veículos com cliente vinculado"
+                }
+              ]
+            },
+            {
+              "pageId": "vehicleDetail",
+              "pageName": "Detalhe do veículo",
+              "actor": "attendant",
+              "purpose": "Cadastrar ou atualizar informações do veículo e vínculo com cliente.",
+              "capabilities": [
+                "manageVehicles"
+              ],
+              "flowRefs": {
+                "experienceFlows": [],
+                "entityLifecycles": [],
+                "taskWorkflows": [],
+                "automations": []
+              },
+              "pluginRefs": [],
+              "mdmRefs": [
+                "vehicle",
+                "customer"
+              ],
+              "primaryUserActions": [
+                "createVehicle",
+                "updateVehicle"
+              ],
+              "pageInputHints": [
+                "vehicleId opcional para edição"
+              ],
+              "navigationRefs": [
+                {
+                  "direction": "inbound",
+                  "pageId": "vehicleList",
+                  "trigger": "Abrir veículo ou criar novo"
+                }
+              ],
+              "persistenceHints": [],
+              "usecaseHints": [],
+              "metricRefs": [],
+              "rulesApplied": [
+                "ruleVehicleCustomerLink",
+                "ruleRoleAccess"
+              ],
+              "bffCommandHints": [
+                {
+                  "name": "getVehicle",
+                  "purpose": "Carregar dados do veículo",
+                  "input": "vehicleId",
+                  "output": "detalhes do veículo e cliente vinculado"
+                },
+                {
+                  "name": "saveVehicle",
+                  "purpose": "Criar ou atualizar veículo",
+                  "input": "dados do veículo e cliente",
+                  "output": "veículo salvo"
+                }
+              ]
+            },
+            {
+              "pageId": "serviceOrderList",
+              "pageName": "Ordens de serviço",
+              "actor": "attendant",
+              "purpose": "Acompanhar e acessar ordens de serviço.",
+              "capabilities": [
+                "serviceOrderLifecycle"
+              ],
+              "flowRefs": {
+                "experienceFlows": [],
+                "entityLifecycles": [],
+                "taskWorkflows": [
+                  "serviceOrderWorkflow"
+                ],
+                "automations": []
+              },
+              "pluginRefs": [],
+              "mdmRefs": [
+                "serviceOrder",
+                "customer",
+                "vehicle"
+              ],
+              "primaryUserActions": [
+                "createServiceOrder",
+                "updateServiceOrderStatus",
+                "closeServiceOrder"
+              ],
+              "pageInputHints": [],
+              "navigationRefs": [
+                {
+                  "direction": "outbound",
+                  "pageId": "serviceOrderCreate",
+                  "trigger": "Criar OS"
+                },
+                {
+                  "direction": "outbound",
+                  "pageId": "serviceOrderDetail",
+                  "trigger": "Selecionar OS"
+                }
+              ],
+              "persistenceHints": [
+                "serviceOrderCommandLog"
+              ],
+              "usecaseHints": [
+                "createServiceOrder",
+                "updateServiceOrderStatus",
+                "closeServiceOrder"
+              ],
+              "metricRefs": [],
+              "rulesApplied": [
+                "ruleServiceOrderStatus",
+                "ruleRoleAccess"
+              ],
+              "bffCommandHints": [
+                {
+                  "name": "listServiceOrders",
+                  "purpose": "Listar OS por status e período",
+                  "input": "filtros, paginação",
+                  "output": "lista de OS com cliente e veículo"
+                }
+              ]
+            },
+            {
+              "pageId": "serviceOrderCreate",
+              "pageName": "Criar ordem de serviço",
+              "actor": "attendant",
+              "purpose": "Registrar nova OS com cliente, veículo e itens iniciais.",
+              "capabilities": [
+                "serviceOrderLifecycle"
+              ],
+              "flowRefs": {
+                "experienceFlows": [],
+                "entityLifecycles": [],
+                "taskWorkflows": [
+                  "serviceOrderWorkflow"
+                ],
+                "automations": []
+              },
+              "pluginRefs": [],
+              "mdmRefs": [
+                "serviceOrder",
+                "customer",
+                "vehicle",
+                "partInventory"
+              ],
+              "primaryUserActions": [
+                "createServiceOrder"
+              ],
+              "pageInputHints": [
+                "customerId e vehicleId selecionados"
+              ],
+              "navigationRefs": [
+                {
+                  "direction": "inbound",
+                  "pageId": "serviceOrderList",
+                  "trigger": "Ação criar OS"
+                },
+                {
+                  "direction": "outbound",
+                  "pageId": "serviceOrderDetail",
+                  "trigger": "OS criada"
+                }
+              ],
+              "persistenceHints": [
+                "serviceOrderCommandLog"
+              ],
+              "usecaseHints": [
+                "createServiceOrder"
+              ],
+              "metricRefs": [],
+              "rulesApplied": [
+                "ruleVehicleCustomerLink",
+                "ruleServiceOrderTotal",
+                "ruleRoleAccess"
+              ],
+              "bffCommandHints": [
+                {
+                  "name": "initServiceOrder",
+                  "purpose": "Criar OS e retornar identificador",
+                  "input": "cliente, veículo, descrição e itens iniciais",
+                  "output": "serviceOrderId e status inicial"
+                }
+              ]
+            },
+            {
+              "pageId": "serviceOrderDetail",
+              "pageName": "Detalhe da ordem de serviço",
+              "actor": "attendant",
+              "purpose": "Atualizar status, acompanhar itens e fechar a OS.",
+              "capabilities": [
+                "serviceOrderLifecycle",
+                "serviceOrderExecution"
+              ],
+              "flowRefs": {
+                "experienceFlows": [],
+                "entityLifecycles": [],
+                "taskWorkflows": [
+                  "serviceOrderWorkflow"
+                ],
+                "automations": []
+              },
+              "pluginRefs": [],
+              "mdmRefs": [
+                "serviceOrder",
+                "partInventory"
+              ],
+              "primaryUserActions": [
+                "updateServiceOrderStatus",
+                "closeServiceOrder",
+                "addLaborItem",
+                "addPartToServiceOrder"
+              ],
+              "pageInputHints": [
+                "serviceOrderId"
+              ],
+              "navigationRefs": [
+                {
+                  "direction": "inbound",
+                  "pageId": "serviceOrderList",
+                  "trigger": "Abrir OS"
+                }
+              ],
+              "persistenceHints": [
+                "serviceOrderCommandLog",
+                "laborItem"
+              ],
+              "usecaseHints": [
+                "updateServiceOrderStatus",
+                "closeServiceOrder",
+                "addLaborItem",
+                "addPartToServiceOrder"
+              ],
+              "metricRefs": [],
+              "rulesApplied": [
+                "ruleServiceOrderStatus",
+                "ruleServiceOrderTotal",
+                "ruleRoleAccess"
+              ],
+              "bffCommandHints": [
+                {
+                  "name": "getServiceOrder",
+                  "purpose": "Carregar detalhes da OS",
+                  "input": "serviceOrderId",
+                  "output": "OS com itens de mão de obra e peças"
+                },
+                {
+                  "name": "updateServiceOrder",
+                  "purpose": "Atualizar status ou itens da OS",
+                  "input": "serviceOrderId, alterações",
+                  "output": "OS atualizada"
+                }
+              ]
+            },
+            {
+              "pageId": "vehicleHistory",
+              "pageName": "Histórico do veículo",
+              "actor": "shopOwner",
+              "purpose": "Consultar histórico completo de serviços e manutenção prevista.",
+              "capabilities": [
+                "vehicleHistory"
+              ],
+              "flowRefs": {
+                "experienceFlows": [],
+                "entityLifecycles": [],
+                "taskWorkflows": [],
+                "automations": [
+                  "maintenanceForecastWorkflow"
+                ]
+              },
+              "pluginRefs": [],
+              "mdmRefs": [
+                "vehicle",
+                "serviceOrder",
+                "invoice"
+              ],
+              "primaryUserActions": [
+                "viewVehicleHistory"
+              ],
+              "pageInputHints": [
+                "vehicleId"
+              ],
+              "navigationRefs": [
+                {
+                  "direction": "outbound",
+                  "pageId": "serviceOrderDetail",
+                  "trigger": "Abrir OS do histórico"
+                }
+              ],
+              "persistenceHints": [],
+              "usecaseHints": [
+                "viewVehicleHistory"
+              ],
+              "metricRefs": [],
+              "rulesApplied": [
+                "ruleMaintenanceForecast",
+                "ruleRoleAccess"
+              ],
+              "bffCommandHints": [
+                {
+                  "name": "getVehicleHistory",
+                  "purpose": "Buscar histórico do veículo",
+                  "input": "vehicleId",
+                  "output": "lista de OS e previsões de manutenção"
+                }
+              ]
+            },
+            {
+              "pageId": "inventoryList",
+              "pageName": "Peças e estoque",
+              "actor": "shopOwner",
+              "purpose": "Monitorar peças e executar ajustes de estoque.",
+              "capabilities": [
+                "partsInventoryControl"
+              ],
+              "flowRefs": {
+                "experienceFlows": [],
+                "entityLifecycles": [],
+                "taskWorkflows": [],
+                "automations": [
+                  "inventoryAlertWorkflow"
+                ]
+              },
+              "pluginRefs": [],
+              "mdmRefs": [
+                "partInventory"
+              ],
+              "primaryUserActions": [
+                "adjustInventory"
+              ],
+              "pageInputHints": [],
+              "navigationRefs": [
+                {
+                  "direction": "outbound",
+                  "pageId": "inventoryAdjust",
+                  "trigger": "Ajustar estoque"
+                }
+              ],
+              "persistenceHints": [
+                "inventoryAdjustmentCommandLog"
+              ],
+              "usecaseHints": [
+                "adjustInventory"
+              ],
+              "metricRefs": [],
+              "rulesApplied": [
+                "ruleInventoryLowStock",
+                "ruleRoleAccess"
+              ],
+              "bffCommandHints": [
+                {
+                  "name": "listInventoryItems",
+                  "purpose": "Listar peças e níveis de estoque",
+                  "input": "filtros, paginação",
+                  "output": "lista de peças com saldo"
+                }
+              ]
+            },
+            {
+              "pageId": "inventoryAdjust",
+              "pageName": "Ajuste de estoque",
+              "actor": "shopOwner",
+              "purpose": "Registrar ajuste de estoque de peça.",
+              "capabilities": [
+                "partsInventoryControl"
+              ],
+              "flowRefs": {
+                "experienceFlows": [],
+                "entityLifecycles": [],
+                "taskWorkflows": [],
+                "automations": [
+                  "inventoryAlertWorkflow"
+                ]
+              },
+              "pluginRefs": [],
+              "mdmRefs": [
+                "partInventory"
+              ],
+              "primaryUserActions": [
+                "adjustInventory"
+              ],
+              "pageInputHints": [
+                "partId opcional pré-selecionado"
+              ],
+              "navigationRefs": [
+                {
+                  "direction": "inbound",
+                  "pageId": "inventoryList",
+                  "trigger": "Ação ajustar estoque"
+                }
+              ],
+              "persistenceHints": [
+                "inventoryAdjustmentCommandLog"
+              ],
+              "usecaseHints": [
+                "adjustInventory"
+              ],
+              "metricRefs": [],
+              "rulesApplied": [
+                "ruleRoleAccess"
+              ],
+              "bffCommandHints": [
+                {
+                  "name": "adjustInventory",
+                  "purpose": "Registrar ajuste de estoque",
+                  "input": "partId, quantidade, motivo",
+                  "output": "saldo atualizado"
+                }
+              ]
+            },
+            {
+              "pageId": "invoiceList",
+              "pageName": "Faturamento",
+              "actor": "shopOwner",
+              "purpose": "Acompanhar e acessar faturas vinculadas às OS.",
+              "capabilities": [
+                "billingManagement"
+              ],
+              "flowRefs": {
+                "experienceFlows": [],
+                "entityLifecycles": [
+                  "billingWorkflow"
+                ],
+                "taskWorkflows": [],
+                "automations": []
+              },
+              "pluginRefs": [],
+              "mdmRefs": [
+                "invoice",
+                "serviceOrder"
+              ],
+              "primaryUserActions": [
+                "generateInvoice",
+                "updateInvoiceStatus"
+              ],
+              "pageInputHints": [],
+              "navigationRefs": [
+                {
+                  "direction": "outbound",
+                  "pageId": "invoiceCreate",
+                  "trigger": "Gerar fatura"
+                },
+                {
+                  "direction": "outbound",
+                  "pageId": "invoiceDetail",
+                  "trigger": "Selecionar fatura"
+                }
+              ],
+              "persistenceHints": [],
+              "usecaseHints": [
+                "generateInvoice",
+                "updateInvoiceStatus"
+              ],
+              "metricRefs": [],
+              "rulesApplied": [
+                "ruleInvoiceFromServiceOrder",
+                "ruleRoleAccess"
+              ],
+              "bffCommandHints": [
+                {
+                  "name": "listInvoices",
+                  "purpose": "Listar faturas por status",
+                  "input": "filtros, paginação",
+                  "output": "lista de faturas e OS vinculada"
+                }
+              ]
+            },
+            {
+              "pageId": "invoiceCreate",
+              "pageName": "Gerar fatura",
+              "actor": "shopOwner",
+              "purpose": "Selecionar OS e confirmar geração de fatura.",
+              "capabilities": [
+                "billingManagement"
+              ],
+              "flowRefs": {
+                "experienceFlows": [],
+                "entityLifecycles": [
+                  "billingWorkflow"
+                ],
+                "taskWorkflows": [],
+                "automations": []
+              },
+              "pluginRefs": [],
+              "mdmRefs": [
+                "invoice",
+                "serviceOrder"
+              ],
+              "primaryUserActions": [
+                "generateInvoice"
+              ],
+              "pageInputHints": [
+                "serviceOrderId selecionado"
+              ],
+              "navigationRefs": [
+                {
+                  "direction": "inbound",
+                  "pageId": "invoiceList",
+                  "trigger": "Ação gerar fatura"
+                },
+                {
+                  "direction": "outbound",
+                  "pageId": "invoiceDetail",
+                  "trigger": "Fatura gerada"
+                }
+              ],
+              "persistenceHints": [],
+              "usecaseHints": [
+                "generateInvoice"
+              ],
+              "metricRefs": [],
+              "rulesApplied": [
+                "ruleInvoiceFromServiceOrder",
+                "ruleServiceOrderTotal",
+                "ruleRoleAccess"
+              ],
+              "bffCommandHints": [
+                {
+                  "name": "createInvoiceFromServiceOrder",
+                  "purpose": "Gerar fatura a partir da OS",
+                  "input": "serviceOrderId, condições de pagamento",
+                  "output": "invoiceId e status"
+                }
+              ]
+            },
+            {
+              "pageId": "invoiceDetail",
+              "pageName": "Detalhe da fatura",
+              "actor": "shopOwner",
+              "purpose": "Atualizar status e visualizar detalhes da fatura.",
+              "capabilities": [
+                "billingManagement"
+              ],
+              "flowRefs": {
+                "experienceFlows": [],
+                "entityLifecycles": [
+                  "billingWorkflow"
+                ],
+                "taskWorkflows": [],
+                "automations": []
+              },
+              "pluginRefs": [],
+              "mdmRefs": [
+                "invoice",
+                "serviceOrder"
+              ],
+              "primaryUserActions": [
+                "updateInvoiceStatus"
+              ],
+              "pageInputHints": [
+                "invoiceId"
+              ],
+              "navigationRefs": [
+                {
+                  "direction": "inbound",
+                  "pageId": "invoiceList",
+                  "trigger": "Abrir fatura"
+                }
+              ],
+              "persistenceHints": [],
+              "usecaseHints": [
+                "updateInvoiceStatus"
+              ],
+              "metricRefs": [],
+              "rulesApplied": [
+                "ruleInvoiceFromServiceOrder",
+                "ruleRoleAccess"
+              ],
+              "bffCommandHints": [
+                {
+                  "name": "getInvoice",
+                  "purpose": "Carregar fatura",
+                  "input": "invoiceId",
+                  "output": "detalhes da fatura e OS vinculada"
+                },
+                {
+                  "name": "updateInvoiceStatus",
+                  "purpose": "Atualizar status da fatura",
+                  "input": "invoiceId, novo status",
+                  "output": "fatura atualizada"
+                }
+              ]
+            },
+            {
+              "pageId": "operationalDashboard",
+              "pageName": "Dashboard operacional",
+              "actor": "shopOwner",
+              "purpose": "Visualizar indicadores operacionais do dia a dia.",
+              "capabilities": [
+                "dashboardInsights"
+              ],
+              "flowRefs": {
+                "experienceFlows": [],
+                "entityLifecycles": [],
+                "taskWorkflows": [],
+                "automations": [
+                  "maintenanceForecastWorkflow"
+                ]
+              },
+              "pluginRefs": [],
+              "mdmRefs": [],
+              "primaryUserActions": [
+                "viewDashboard"
+              ],
+              "pageInputHints": [],
+              "navigationRefs": [],
+              "persistenceHints": [],
+              "usecaseHints": [
+                "viewDashboardMetrics"
+              ],
+              "metricRefs": [],
+              "rulesApplied": [
+                "ruleRoleAccess"
+              ],
+              "bffCommandHints": [
+                {
+                  "name": "getOperationalSummary",
+                  "purpose": "Carregar indicadores operacionais",
+                  "input": "intervalo e filtros",
+                  "output": "resumo de OS, faturamento e estoque"
+                }
+              ]
+            },
+            {
+              "pageId": "metricsDashboard",
+              "pageName": "Dashboard de métricas",
+              "actor": "shopOwner",
+              "purpose": "Acompanhar métricas consolidadas do negócio.",
+              "capabilities": [
+                "dashboardInsights"
+              ],
+              "flowRefs": {
+                "experienceFlows": [],
+                "entityLifecycles": [],
+                "taskWorkflows": [],
+                "automations": []
+              },
+              "pluginRefs": [],
+              "mdmRefs": [],
+              "primaryUserActions": [
+                "viewDashboard"
+              ],
+              "pageInputHints": [],
+              "navigationRefs": [],
+              "persistenceHints": [],
+              "usecaseHints": [
+                "viewDashboardMetrics"
+              ],
+              "metricRefs": [
+                "serviceOrderMetrics",
+                "inventoryMetrics",
+                "invoiceMetrics",
+                "maintenanceForecastMetrics"
+              ],
+              "rulesApplied": [
+                "ruleRoleAccess"
+              ],
+              "bffCommandHints": [
+                {
+                  "name": "getMetricDashboard",
+                  "purpose": "Carregar tabelas de métricas",
+                  "input": "intervalo e filtros",
+                  "output": "tabelas de métricas consolidadas"
+                }
+              ]
+            }
+          ]
+        },
+        "questions": [],
+        "trace": [
+          "included pages for all now capabilities with user interaction",
+          "added admin-only metrics dashboard per metric dashboards list",
+          "ensured invoice generation page includes OS selection before confirmation",
+          "mapped workflows to flowRefs by executionMode"
+        ]
+      }
+    },
+    "status": "completed",
+    "stepId": 53,
+    "interaction": null,
+    "nextSteps": null
+  }
+}

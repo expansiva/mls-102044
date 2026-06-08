@@ -18,5 +18,30 @@
   "reasons": {},
   "services": [],
   "links": [],
-  "servicesConfigEnabled": false
+  "servicesConfigEnabled": false,
+  "modules": [
+    {
+      "moduleName": "repairBay",
+      "module": {
+        "moduleName": "repairBay",
+        "purpose": "Organizar ordens de serviço e histórico de veículos com custos precisos, controle de peças e faturamento para oficinas mecânicas independentes.",
+        "businessDomain": "Oficina mecânica independente",
+        "languages": [
+          "pt-BR",
+          "en"
+        ],
+        "visualStyle": {
+          "tone": "Profissional e moderno",
+          "layout": "Limpo, focado em fluxo rápido de OS e histórico",
+          "palette": [
+            "#1F2937",
+            "#374151",
+            "#0EA5E9",
+            "#10B981",
+            "#F59E0B"
+          ]
+        }
+      }
+    }
+  ]
 }

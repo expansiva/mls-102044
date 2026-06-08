@@ -1,0 +1,264 @@
+{
+  "schemaVersion": "2026-06-06",
+  "artifactType": "indexCheckpoint",
+  "indexName": "persistenceIndex",
+  "moduleName": "repairBay",
+  "status": "frozen",
+  "approvedAt": "2026-06-08T23:18:42.614Z",
+  "source": {
+    "agentName": "agentPlanPersistenceIndex",
+    "stepId": 38,
+    "planId": "plan-index-critic:persistenceIndex:1"
+  },
+  "healthReport": {
+    "localErrors": [],
+    "localWarnings": [],
+    "criticErrors": [],
+    "criticWarnings": [],
+    "attempts": 1,
+    "notes": []
+  },
+  "index": {
+    "runId": "provider-tool-call",
+    "stepId": "12-plan-persistence-index",
+    "schemaVersion": "2026-06-02",
+    "status": "ok",
+    "result": {
+      "persistenceScope": {
+        "moduleId": "repairBay",
+        "newTablesRequired": true,
+        "metricsTablesRequired": true,
+        "excludedEntities": [
+          {
+            "entityId": "Customer",
+            "ownership": "mdmOwned",
+            "reason": "Entidade MDM aceita (decisionMdmCustomer)."
+          },
+          {
+            "entityId": "Vehicle",
+            "ownership": "mdmOwned",
+            "reason": "Entidade MDM aceita (decisionMdmVehicle)."
+          },
+          {
+            "entityId": "ServiceOrder",
+            "ownership": "mdmOwned",
+            "reason": "Entidade MDM aceita (decisionMdmServiceOrder)."
+          },
+          {
+            "entityId": "Part",
+            "ownership": "mdmOwned",
+            "reason": "Entidade MDM aceita (decisionMdmPartInventory)."
+          },
+          {
+            "entityId": "InventoryStock",
+            "ownership": "mdmOwned",
+            "reason": "Entidade MDM aceita (decisionMdmPartInventory)."
+          },
+          {
+            "entityId": "Invoice",
+            "ownership": "mdmOwned",
+            "reason": "Entidade MDM aceita (decisionMdmInvoice)."
+          },
+          {
+            "entityId": "InvoiceCommand",
+            "ownership": "horizontalOwned",
+            "reason": "Pertence ao módulo horizontal de finance."
+          }
+        ]
+      },
+      "tables": [
+        {
+          "tableId": "laborItem",
+          "tableName": "labor_item",
+          "title": "Itens de Mão de Obra",
+          "purpose": "Registrar serviços executados na OS com tempo e custo para cálculo do total e histórico.",
+          "ownership": "moduleOwned",
+          "rootEntity": "LaborItem",
+          "sourceEntities": [
+            "LaborItem",
+            "ServiceOrder"
+          ],
+          "embeddedEntities": [],
+          "persistencePattern": "singleEntity",
+          "tableKind": "transactional",
+          "detailsColumnRecommended": false,
+          "priority": "now",
+          "readsByArtifacts": [
+            "serviceOrderDetailPage",
+            "vehicleHistoryPage",
+            "serviceOrderUsecaseEntities"
+          ],
+          "writesByArtifacts": [
+            "serviceOrderDetailPage",
+            "serviceOrderUsecaseEntities"
+          ],
+          "rulesApplied": [
+            "ruleServiceOrderTotal",
+            "ruleRoleAccess"
+          ],
+          "reason": "Necessário para registrar mão de obra vinculada à OS sem criar tabela MDM."
+        },
+        {
+          "tableId": "maintenanceForecast",
+          "tableName": "maintenance_forecast",
+          "title": "Manutenções Previstas",
+          "purpose": "Armazenar previsões de manutenção por veículo para consulta e métricas operacionais.",
+          "ownership": "moduleOwned",
+          "rootEntity": "MaintenanceForecast",
+          "sourceEntities": [
+            "MaintenanceForecast",
+            "Vehicle",
+            "ServiceOrder"
+          ],
+          "embeddedEntities": [],
+          "persistencePattern": "singleEntity",
+          "tableKind": "transactional",
+          "detailsColumnRecommended": false,
+          "priority": "soon",
+          "readsByArtifacts": [
+            "dashboardPage",
+            "vehicleHistoryPage"
+          ],
+          "writesByArtifacts": [
+            "maintenanceForecastWorkflow",
+            "maintenanceForecastUsecaseEntities"
+          ],
+          "rulesApplied": [
+            "ruleMaintenanceForecast",
+            "ruleRoleAccess"
+          ],
+          "reason": "Suporta geração e consulta de manutenção prevista sem depender de MDM dedicado."
+        },
+        {
+          "tableId": "repairSuggestion",
+          "tableName": "repair_suggestion",
+          "title": "Sugestões de Reparo",
+          "purpose": "Guardar respostas da IA para reparos comuns e estimativas por veículo/OS.",
+          "ownership": "moduleOwned",
+          "rootEntity": "RepairSuggestion",
+          "sourceEntities": [
+            "RepairSuggestion",
+            "Vehicle",
+            "ServiceOrder"
+          ],
+          "embeddedEntities": [],
+          "persistencePattern": "aggregateJsonDetails",
+          "tableKind": "transactional",
+          "detailsColumnRecommended": true,
+          "priority": "soon",
+          "readsByArtifacts": [
+            "repairSuggestionAgent",
+            "serviceOrderDetailPage"
+          ],
+          "writesByArtifacts": [
+            "repairSuggestionAgent"
+          ],
+          "rulesApplied": [
+            "ruleRoleAccess"
+          ],
+          "reason": "Resultados de IA são lidos junto ao contexto da OS e não exigem filtros complexos."
+        },
+        {
+          "tableId": "serviceOrderCommandLog",
+          "tableName": "service_order_command_log",
+          "title": "Logs de Comandos de OS",
+          "purpose": "Auditar comandos de criação/atualização de OS para rastreabilidade.",
+          "ownership": "moduleOwned",
+          "rootEntity": "ServiceOrderCommand",
+          "sourceEntities": [
+            "ServiceOrderCommand",
+            "ServiceOrder"
+          ],
+          "embeddedEntities": [],
+          "persistencePattern": "eventLog",
+          "tableKind": "transactional",
+          "detailsColumnRecommended": true,
+          "priority": "now",
+          "readsByArtifacts": [
+            "serviceOrderWorkflow",
+            "serviceOrderUsecaseEntities"
+          ],
+          "writesByArtifacts": [
+            "serviceOrderWorkflow",
+            "serviceOrderUsecaseEntities"
+          ],
+          "rulesApplied": [
+            "ruleServiceOrderStatus",
+            "ruleServiceOrderTotal",
+            "ruleRoleAccess"
+          ],
+          "reason": "Necessário para rastrear ações de OS e apoiar auditoria de status e total."
+        },
+        {
+          "tableId": "inventoryAdjustmentCommandLog",
+          "tableName": "inventory_adjustment_command_log",
+          "title": "Logs de Ajuste de Estoque",
+          "purpose": "Registrar comandos de ajuste e baixa de estoque para auditoria e alertas.",
+          "ownership": "moduleOwned",
+          "rootEntity": "InventoryAdjustmentCommand",
+          "sourceEntities": [
+            "InventoryAdjustmentCommand",
+            "InventoryStock",
+            "Part"
+          ],
+          "embeddedEntities": [],
+          "persistencePattern": "eventLog",
+          "tableKind": "transactional",
+          "detailsColumnRecommended": true,
+          "priority": "now",
+          "readsByArtifacts": [
+            "inventoryAlertWorkflow",
+            "inventoryAdjustUsecaseEntities"
+          ],
+          "writesByArtifacts": [
+            "inventoryAlertWorkflow",
+            "inventoryAdjustUsecaseEntities",
+            "serviceOrderUsecaseEntities"
+          ],
+          "rulesApplied": [
+            "ruleInventoryLowStock",
+            "ruleRoleAccess"
+          ],
+          "reason": "Permite histórico de ajustes e suporte aos alertas de estoque baixo."
+        },
+        {
+          "tableId": "maintenanceForecastCommandLog",
+          "tableName": "maintenance_forecast_command_log",
+          "title": "Logs de Comandos de Manutenção Prevista",
+          "purpose": "Registrar comandos de geração/atualização de previsões.",
+          "ownership": "moduleOwned",
+          "rootEntity": "MaintenanceForecastCommand",
+          "sourceEntities": [
+            "MaintenanceForecastCommand",
+            "MaintenanceForecast"
+          ],
+          "embeddedEntities": [],
+          "persistencePattern": "eventLog",
+          "tableKind": "transactional",
+          "detailsColumnRecommended": true,
+          "priority": "soon",
+          "readsByArtifacts": [
+            "maintenanceForecastWorkflow",
+            "maintenanceForecastUsecaseEntities"
+          ],
+          "writesByArtifacts": [
+            "maintenanceForecastWorkflow",
+            "maintenanceForecastUsecaseEntities"
+          ],
+          "rulesApplied": [
+            "ruleMaintenanceForecast",
+            "ruleRoleAccess"
+          ],
+          "reason": "Garante rastreabilidade das atualizações de manutenção prevista."
+        }
+      ]
+    },
+    "questions": [],
+    "trace": [
+      "Apliquei ruleServiceOrderTotal e ruleRoleAccess na tabela laborItem.",
+      "Apliquei ruleMaintenanceForecast e ruleRoleAccess nas tabelas maintenanceForecast e maintenanceForecastCommandLog.",
+      "Apliquei ruleInventoryLowStock e ruleRoleAccess no log inventoryAdjustmentCommandLog.",
+      "Apliquei ruleServiceOrderStatus, ruleServiceOrderTotal e ruleRoleAccess no log serviceOrderCommandLog."
+    ]
+  }
+}

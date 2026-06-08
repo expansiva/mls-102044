@@ -1,0 +1,216 @@
+{
+  "savedAt": "2026-06-08T23:25:34.271Z",
+  "agentName": "agentPlanWorkflowDefinition",
+  "stepId": 55,
+  "planning": null,
+  "status": "waiting_after_prompt",
+  "payload": {
+    "type": "flexible",
+    "result": {
+      "toolName": "submitWorkflowDefinitionPlan",
+      "arguments": {
+        "status": "ok",
+        "result": {
+          "workflowDefinition": {
+            "workflowId": "maintenanceForecastWorkflow",
+            "title": "Geração de Manutenção Prevista",
+            "purpose": "Gerar e atualizar previsões de manutenção com base no histórico de serviços do veículo, alimentando alertas no dashboard operacional.",
+            "executionMode": "automation",
+            "createsTask": false,
+            "taskConfig": {
+              "taskTitleTemplate": "",
+              "assigneeRules": [],
+              "slaRules": [],
+              "taskRoomRequired": false
+            },
+            "actors": [
+              "shopOwner"
+            ],
+            "states": [
+              {
+                "stateId": "scheduled",
+                "description": "Recalculo agendado para executar geração de previsões."
+              },
+              {
+                "stateId": "processing",
+                "description": "Processando histórico de OS e recalculando previsões por veículo."
+              },
+              {
+                "stateId": "forecastUpdated",
+                "description": "Previsões geradas ou atualizadas com sucesso."
+              },
+              {
+                "stateId": "failed",
+                "description": "Falha ao executar o recalculo das previsões."
+              }
+            ],
+            "transitions": [
+              {
+                "from": "scheduled",
+                "to": "processing",
+                "trigger": "runScheduledJob",
+                "actor": "system",
+                "conditions": [
+                  "ruleRoleAccess"
+                ],
+                "actions": [
+                  "maintenanceForecastCommand.commandType=generate",
+                  "maintenanceForecastCommand.status=processing",
+                  "maintenanceForecastCommand.requestedByRole=shopOwner"
+                ],
+                "rulesApplied": [
+                  "ruleMaintenanceForecast",
+                  "ruleRoleAccess"
+                ]
+              },
+              {
+                "from": "processing",
+                "to": "forecastUpdated",
+                "trigger": "applyForecastResults",
+                "actor": "system",
+                "conditions": [
+                  "ruleMaintenanceForecast"
+                ],
+                "actions": [
+                  "maintenanceForecast.status=active",
+                  "maintenanceForecast.updatedAt=now()",
+                  "maintenanceForecastCommand.status=completed"
+                ],
+                "rulesApplied": [
+                  "ruleMaintenanceForecast"
+                ]
+              },
+              {
+                "from": "processing",
+                "to": "failed",
+                "trigger": "failForecastJob",
+                "actor": "system",
+                "conditions": [],
+                "actions": [
+                  "maintenanceForecastCommand.status=failed"
+                ],
+                "rulesApplied": [
+                  "ruleMaintenanceForecast"
+                ]
+              }
+            ],
+            "requiredEntities": [
+              "MaintenanceForecast",
+              "MaintenanceForecastCommand",
+              "Vehicle",
+              "ServiceOrder"
+            ],
+            "persistenceRefs": [
+              "maintenanceForecast",
+              "maintenanceForecastCommandLog"
+            ],
+            "usecaseRefs": [
+              "maintenanceForecastUsecaseEntities"
+            ],
+            "metricRefs": [
+              "maintenanceForecastMetrics"
+            ],
+            "userActions": [],
+            "relatedPages": [],
+            "relatedAgents": [],
+            "relatedPlugins": [],
+            "rulesApplied": [
+              "ruleMaintenanceForecast",
+              "ruleRoleAccess"
+            ],
+            "implementationSuggestions": [
+              {
+                "suggestionId": "nightlyForecastRecalc",
+                "title": "Recalcular previsões diariamente",
+                "priority": "soon",
+                "description": "Agendar execução noturna do workflow para recalcular previsões com base em OS fechadas, usando o usecase maintenanceForecastUsecaseEntities.",
+                "tradeoff": "Mais consumo de recursos fora do horário comercial, mas mantém previsões sempre atuais."
+              },
+              {
+                "suggestionId": "dashboardAlertForecast",
+                "title": "Exibir alerta no dashboard para manutenções próximas",
+                "priority": "soon",
+                "description": "Consumir maintenanceForecastMetrics no dashboard operacional para destacar veículos com manutenção prevista.",
+                "tradeoff": "Requer ajustes no dashboard e consultas de métricas."
+              },
+              {
+                "suggestionId": "noTaskAutomation",
+                "title": "Manter automação sem criação de tarefas",
+                "priority": "now",
+                "description": "O fluxo é totalmente automatizado e não cria tarefas; ações manuais devem ocorrer no dashboard via alertas e filtros.",
+                "tradeoff": "Menos rastreabilidade de ações humanas, porém menor carga operacional."
+              }
+            ],
+            "workflowScope": "singleModule",
+            "moduleRefs": [
+              "repairBay"
+            ],
+            "pageRefsByModule": [],
+            "entityRefsByModule": [
+              {
+                "moduleId": "repairBay",
+                "entity": "MaintenanceForecast"
+              },
+              {
+                "moduleId": "repairBay",
+                "entity": "MaintenanceForecastCommand"
+              },
+              {
+                "moduleId": "repairBay",
+                "entity": "Vehicle"
+              },
+              {
+                "moduleId": "repairBay",
+                "entity": "ServiceOrder"
+              }
+            ],
+            "writesArtifacts": [
+              {
+                "moduleId": "repairBay",
+                "artifactType": "usecase",
+                "artifactId": "maintenanceForecastUsecaseEntities"
+              },
+              {
+                "moduleId": "repairBay",
+                "artifactType": "table",
+                "artifactId": "maintenanceForecast"
+              },
+              {
+                "moduleId": "repairBay",
+                "artifactType": "table",
+                "artifactId": "maintenanceForecastCommandLog"
+              },
+              {
+                "moduleId": "repairBay",
+                "artifactType": "metricTable",
+                "artifactId": "maintenanceForecastMetrics"
+              },
+              {
+                "moduleId": "repairBay",
+                "artifactType": "workflow",
+                "artifactId": "maintenanceForecastWorkflow"
+              }
+            ]
+          },
+          "defsPlan": {
+            "fileName": "workflows/maintenanceForecastWorkflow.defs.ts",
+            "exportName": "maintenanceForecastWorkflowDef",
+            "saveAsDefs": true
+          }
+        },
+        "questions": [],
+        "trace": [
+          "Execução definida como automation conforme índice.",
+          "createsTask mantido false; adicionada sugestão para justificar ausência de tarefas.",
+          "Transições escrevem apenas campos de MaintenanceForecast e MaintenanceForecastCommand conforme entidades fornecidas.",
+          "persistenceRefs incluem tabelas moduleOwned usadas por usecases.",
+          "metricRefs incluído porque usecase alimenta maintenanceForecastMetrics."
+        ]
+      }
+    },
+    "status": "completed",
+    "stepId": 56,
+    "interaction": null,
+    "nextSteps": null
+  }
+}

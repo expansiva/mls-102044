@@ -1,0 +1,1012 @@
+{
+  "savedAt": "2026-06-08T23:23:03.724Z",
+  "agentName": "agentPlanUsecaseEntities",
+  "stepId": 19,
+  "planning": {
+    "planId": "plan-usecase-entities",
+    "dependsOn": [
+      "plan-table-definition",
+      "plan-metric-table-definition"
+    ],
+    "executionMode": "sequential",
+    "executionHost": "client"
+  },
+  "status": "waiting_after_prompt",
+  "payload": {
+    "type": "flexible",
+    "result": {
+      "toolName": "submitUsecaseEntitiesPlan",
+      "arguments": {
+        "status": "ok",
+        "result": {
+          "backendArchitecture": {
+            "pattern": "Camadas modulares com BFF e casos de uso",
+            "layer2Responsibility": "Orquestrar requisições do BFF, validar permissões e delegar para casos de uso.",
+            "layer3Responsibility": "Executar regras de negócio, coordenar escrita/leitura em tabelas transacionais/MDM e atualizar métricas.",
+            "layer1Responsibility": "Persistência de dados transacionais, logs e métricas com acesso apenas pelos casos de uso."
+          },
+          "usecaseEntities": [
+            {
+              "usecaseEntityId": "laborItemUsecaseEntity",
+              "title": "Itens de Mão de Obra",
+              "purpose": "Gerenciar criação e atualização de itens de mão de obra vinculados à OS.",
+              "sourceTables": [
+                {
+                  "tableName": "labor_item",
+                  "ownership": "moduleOwned"
+                }
+              ],
+              "allowedOperations": [
+                "create",
+                "read",
+                "update"
+              ],
+              "layer": "layer_3_usecases",
+              "rulesApplied": [
+                "ruleServiceOrderTotal",
+                "ruleRoleAccess"
+              ]
+            },
+            {
+              "usecaseEntityId": "serviceOrderCommandUsecaseEntity",
+              "title": "Comandos de OS",
+              "purpose": "Registrar comandos e auditoria de criação/atualização de OS.",
+              "sourceTables": [
+                {
+                  "tableName": "service_order_command_log",
+                  "ownership": "moduleOwned"
+                }
+              ],
+              "allowedOperations": [
+                "create",
+                "read"
+              ],
+              "layer": "layer_3_usecases",
+              "rulesApplied": [
+                "ruleServiceOrderStatus",
+                "ruleServiceOrderTotal",
+                "ruleRoleAccess"
+              ]
+            },
+            {
+              "usecaseEntityId": "inventoryAdjustmentCommandUsecaseEntity",
+              "title": "Comandos de Ajuste de Estoque",
+              "purpose": "Registrar ajustes e baixas de estoque para auditoria e alertas.",
+              "sourceTables": [
+                {
+                  "tableName": "inventory_adjustment_command_log",
+                  "ownership": "moduleOwned"
+                }
+              ],
+              "allowedOperations": [
+                "create",
+                "read"
+              ],
+              "layer": "layer_3_usecases",
+              "rulesApplied": [
+                "ruleInventoryLowStock",
+                "ruleRoleAccess"
+              ]
+            },
+            {
+              "usecaseEntityId": "maintenanceForecastUsecaseEntity",
+              "title": "Manutenções Previstas",
+              "purpose": "Gerar e manter previsões de manutenção por veículo.",
+              "sourceTables": [
+                {
+                  "tableName": "maintenance_forecast",
+                  "ownership": "moduleOwned"
+                }
+              ],
+              "allowedOperations": [
+                "create",
+                "read",
+                "update"
+              ],
+              "layer": "layer_3_usecases",
+              "rulesApplied": [
+                "ruleMaintenanceForecast",
+                "ruleRoleAccess"
+              ]
+            },
+            {
+              "usecaseEntityId": "maintenanceForecastCommandUsecaseEntity",
+              "title": "Comandos de Manutenção Prevista",
+              "purpose": "Registrar comandos de geração/atualização de previsões.",
+              "sourceTables": [
+                {
+                  "tableName": "maintenance_forecast_command_log",
+                  "ownership": "moduleOwned"
+                }
+              ],
+              "allowedOperations": [
+                "create",
+                "read"
+              ],
+              "layer": "layer_3_usecases",
+              "rulesApplied": [
+                "ruleMaintenanceForecast",
+                "ruleRoleAccess"
+              ]
+            },
+            {
+              "usecaseEntityId": "repairSuggestionUsecaseEntity",
+              "title": "Sugestões de Reparo",
+              "purpose": "Persistir sugestões geradas pela IA para consulta posterior.",
+              "sourceTables": [
+                {
+                  "tableName": "repair_suggestion",
+                  "ownership": "moduleOwned"
+                }
+              ],
+              "allowedOperations": [
+                "create",
+                "read",
+                "update"
+              ],
+              "layer": "layer_3_usecases",
+              "rulesApplied": [
+                "ruleRoleAccess"
+              ]
+            }
+          ],
+          "usecases": [
+            {
+              "usecaseId": "createServiceOrder",
+              "title": "Criar OS",
+              "purpose": "Criar uma nova ordem de serviço e registrar o comando.",
+              "actor": "attendant",
+              "layer": "layer_3_usecases",
+              "inputEntities": [
+                "serviceOrderCommandUsecaseEntity"
+              ],
+              "outputEntities": [
+                "serviceOrderCommandUsecaseEntity"
+              ],
+              "readsTables": [
+                {
+                  "tableName": "Customer",
+                  "ownership": "mdmOwned"
+                },
+                {
+                  "tableName": "Vehicle",
+                  "ownership": "mdmOwned"
+                }
+              ],
+              "writesTables": [
+                {
+                  "tableName": "ServiceOrder",
+                  "ownership": "mdmOwned"
+                },
+                {
+                  "tableName": "service_order_command_log",
+                  "ownership": "moduleOwned"
+                },
+                {
+                  "tableName": "service_order_metrics",
+                  "ownership": "moduleOwned"
+                }
+              ],
+              "commands": [
+                {
+                  "commandId": "createServiceOrder",
+                  "input": [
+                    {
+                      "name": "customerId",
+                      "type": "string",
+                      "required": true
+                    },
+                    {
+                      "name": "vehicleId",
+                      "type": "string",
+                      "required": true
+                    },
+                    {
+                      "name": "notes",
+                      "type": "string",
+                      "required": false
+                    }
+                  ],
+                  "output": [
+                    {
+                      "name": "serviceOrderId",
+                      "type": "string"
+                    },
+                    {
+                      "name": "status",
+                      "type": "string"
+                    },
+                    {
+                      "name": "total",
+                      "type": "number"
+                    }
+                  ]
+                }
+              ],
+              "rulesApplied": [
+                "ruleVehicleCustomerLink",
+                "ruleServiceOrderStatus",
+                "ruleRoleAccess"
+              ]
+            },
+            {
+              "usecaseId": "updateServiceOrderStatus",
+              "title": "Atualizar status da OS",
+              "purpose": "Atualizar o status da OS seguindo o ciclo de vida e registrar o comando.",
+              "actor": "attendant",
+              "layer": "layer_3_usecases",
+              "inputEntities": [
+                "serviceOrderCommandUsecaseEntity"
+              ],
+              "outputEntities": [
+                "serviceOrderCommandUsecaseEntity"
+              ],
+              "readsTables": [
+                {
+                  "tableName": "ServiceOrder",
+                  "ownership": "mdmOwned"
+                }
+              ],
+              "writesTables": [
+                {
+                  "tableName": "ServiceOrder",
+                  "ownership": "mdmOwned"
+                },
+                {
+                  "tableName": "service_order_command_log",
+                  "ownership": "moduleOwned"
+                },
+                {
+                  "tableName": "service_order_metrics",
+                  "ownership": "moduleOwned"
+                }
+              ],
+              "commands": [
+                {
+                  "commandId": "updateServiceOrderStatus",
+                  "input": [
+                    {
+                      "name": "serviceOrderId",
+                      "type": "string",
+                      "required": true
+                    },
+                    {
+                      "name": "newStatus",
+                      "type": "string",
+                      "required": true
+                    }
+                  ],
+                  "output": [
+                    {
+                      "name": "serviceOrderId",
+                      "type": "string"
+                    },
+                    {
+                      "name": "status",
+                      "type": "string"
+                    }
+                  ]
+                }
+              ],
+              "rulesApplied": [
+                "ruleServiceOrderStatus",
+                "ruleRoleAccess"
+              ]
+            },
+            {
+              "usecaseId": "closeServiceOrder",
+              "title": "Fechar OS",
+              "purpose": "Fechar a OS confirmando total e registrando o comando.",
+              "actor": "attendant",
+              "layer": "layer_3_usecases",
+              "inputEntities": [
+                "serviceOrderCommandUsecaseEntity"
+              ],
+              "outputEntities": [
+                "serviceOrderCommandUsecaseEntity"
+              ],
+              "readsTables": [
+                {
+                  "tableName": "ServiceOrder",
+                  "ownership": "mdmOwned"
+                },
+                {
+                  "tableName": "labor_item",
+                  "ownership": "moduleOwned"
+                }
+              ],
+              "writesTables": [
+                {
+                  "tableName": "ServiceOrder",
+                  "ownership": "mdmOwned"
+                },
+                {
+                  "tableName": "service_order_command_log",
+                  "ownership": "moduleOwned"
+                },
+                {
+                  "tableName": "service_order_metrics",
+                  "ownership": "moduleOwned"
+                }
+              ],
+              "commands": [
+                {
+                  "commandId": "closeServiceOrder",
+                  "input": [
+                    {
+                      "name": "serviceOrderId",
+                      "type": "string",
+                      "required": true
+                    }
+                  ],
+                  "output": [
+                    {
+                      "name": "serviceOrderId",
+                      "type": "string"
+                    },
+                    {
+                      "name": "status",
+                      "type": "string"
+                    },
+                    {
+                      "name": "total",
+                      "type": "number"
+                    }
+                  ]
+                }
+              ],
+              "rulesApplied": [
+                "ruleServiceOrderStatus",
+                "ruleServiceOrderTotal",
+                "ruleRoleAccess"
+              ]
+            },
+            {
+              "usecaseId": "addLaborItem",
+              "title": "Adicionar mão de obra",
+              "purpose": "Registrar item de mão de obra e recalcular total da OS.",
+              "actor": "mechanic",
+              "layer": "layer_3_usecases",
+              "inputEntities": [
+                "laborItemUsecaseEntity",
+                "serviceOrderCommandUsecaseEntity"
+              ],
+              "outputEntities": [
+                "laborItemUsecaseEntity"
+              ],
+              "readsTables": [
+                {
+                  "tableName": "ServiceOrder",
+                  "ownership": "mdmOwned"
+                }
+              ],
+              "writesTables": [
+                {
+                  "tableName": "labor_item",
+                  "ownership": "moduleOwned"
+                },
+                {
+                  "tableName": "ServiceOrder",
+                  "ownership": "mdmOwned"
+                },
+                {
+                  "tableName": "service_order_command_log",
+                  "ownership": "moduleOwned"
+                },
+                {
+                  "tableName": "service_order_metrics",
+                  "ownership": "moduleOwned"
+                }
+              ],
+              "commands": [
+                {
+                  "commandId": "addLaborItem",
+                  "input": [
+                    {
+                      "name": "serviceOrderId",
+                      "type": "string",
+                      "required": true
+                    },
+                    {
+                      "name": "description",
+                      "type": "string",
+                      "required": true
+                    },
+                    {
+                      "name": "hoursWorked",
+                      "type": "number",
+                      "required": true
+                    },
+                    {
+                      "name": "hourlyRate",
+                      "type": "number",
+                      "required": true
+                    }
+                  ],
+                  "output": [
+                    {
+                      "name": "laborItemId",
+                      "type": "string"
+                    },
+                    {
+                      "name": "serviceOrderTotal",
+                      "type": "number"
+                    }
+                  ]
+                }
+              ],
+              "rulesApplied": [
+                "ruleServiceOrderTotal",
+                "ruleRoleAccess"
+              ]
+            },
+            {
+              "usecaseId": "addPartToServiceOrder",
+              "title": "Adicionar peça à OS",
+              "purpose": "Registrar peça utilizada, baixar estoque e recalcular total da OS.",
+              "actor": "mechanic",
+              "layer": "layer_3_usecases",
+              "inputEntities": [
+                "inventoryAdjustmentCommandUsecaseEntity",
+                "serviceOrderCommandUsecaseEntity"
+              ],
+              "outputEntities": [
+                "inventoryAdjustmentCommandUsecaseEntity"
+              ],
+              "readsTables": [
+                {
+                  "tableName": "ServiceOrder",
+                  "ownership": "mdmOwned"
+                },
+                {
+                  "tableName": "Part",
+                  "ownership": "mdmOwned"
+                },
+                {
+                  "tableName": "InventoryStock",
+                  "ownership": "mdmOwned"
+                }
+              ],
+              "writesTables": [
+                {
+                  "tableName": "ServiceOrder",
+                  "ownership": "mdmOwned"
+                },
+                {
+                  "tableName": "InventoryStock",
+                  "ownership": "mdmOwned"
+                },
+                {
+                  "tableName": "inventory_adjustment_command_log",
+                  "ownership": "moduleOwned"
+                },
+                {
+                  "tableName": "service_order_command_log",
+                  "ownership": "moduleOwned"
+                },
+                {
+                  "tableName": "inventory_metrics",
+                  "ownership": "moduleOwned"
+                },
+                {
+                  "tableName": "service_order_metrics",
+                  "ownership": "moduleOwned"
+                }
+              ],
+              "commands": [
+                {
+                  "commandId": "addPartToServiceOrder",
+                  "input": [
+                    {
+                      "name": "serviceOrderId",
+                      "type": "string",
+                      "required": true
+                    },
+                    {
+                      "name": "partId",
+                      "type": "string",
+                      "required": true
+                    },
+                    {
+                      "name": "quantity",
+                      "type": "number",
+                      "required": true
+                    },
+                    {
+                      "name": "unitPrice",
+                      "type": "number",
+                      "required": true
+                    }
+                  ],
+                  "output": [
+                    {
+                      "name": "serviceOrderTotal",
+                      "type": "number"
+                    },
+                    {
+                      "name": "newStockLevel",
+                      "type": "number"
+                    }
+                  ]
+                }
+              ],
+              "rulesApplied": [
+                "ruleServiceOrderTotal",
+                "ruleInventoryLowStock",
+                "ruleRoleAccess"
+              ]
+            },
+            {
+              "usecaseId": "adjustInventory",
+              "title": "Ajustar estoque",
+              "purpose": "Aplicar ajustes manuais de estoque e registrar o comando.",
+              "actor": "shopOwner",
+              "layer": "layer_3_usecases",
+              "inputEntities": [
+                "inventoryAdjustmentCommandUsecaseEntity"
+              ],
+              "outputEntities": [
+                "inventoryAdjustmentCommandUsecaseEntity"
+              ],
+              "readsTables": [
+                {
+                  "tableName": "InventoryStock",
+                  "ownership": "mdmOwned"
+                },
+                {
+                  "tableName": "Part",
+                  "ownership": "mdmOwned"
+                }
+              ],
+              "writesTables": [
+                {
+                  "tableName": "InventoryStock",
+                  "ownership": "mdmOwned"
+                },
+                {
+                  "tableName": "inventory_adjustment_command_log",
+                  "ownership": "moduleOwned"
+                },
+                {
+                  "tableName": "inventory_metrics",
+                  "ownership": "moduleOwned"
+                }
+              ],
+              "commands": [
+                {
+                  "commandId": "adjustInventory",
+                  "input": [
+                    {
+                      "name": "inventoryStockId",
+                      "type": "string",
+                      "required": true
+                    },
+                    {
+                      "name": "partId",
+                      "type": "string",
+                      "required": true
+                    },
+                    {
+                      "name": "quantityDelta",
+                      "type": "number",
+                      "required": true
+                    },
+                    {
+                      "name": "reasonCode",
+                      "type": "string",
+                      "required": false
+                    }
+                  ],
+                  "output": [
+                    {
+                      "name": "newQuantity",
+                      "type": "number"
+                    }
+                  ]
+                }
+              ],
+              "rulesApplied": [
+                "ruleInventoryLowStock",
+                "ruleRoleAccess"
+              ]
+            },
+            {
+              "usecaseId": "generateInvoice",
+              "title": "Gerar fatura",
+              "purpose": "Criar fatura a partir da OS concluída.",
+              "actor": "shopOwner",
+              "layer": "layer_3_usecases",
+              "inputEntities": [
+                "serviceOrderCommandUsecaseEntity"
+              ],
+              "outputEntities": [
+                "serviceOrderCommandUsecaseEntity"
+              ],
+              "readsTables": [
+                {
+                  "tableName": "ServiceOrder",
+                  "ownership": "mdmOwned"
+                }
+              ],
+              "writesTables": [
+                {
+                  "tableName": "Invoice",
+                  "ownership": "mdmOwned"
+                },
+                {
+                  "tableName": "invoice_metrics",
+                  "ownership": "moduleOwned"
+                }
+              ],
+              "commands": [
+                {
+                  "commandId": "generateInvoice",
+                  "input": [
+                    {
+                      "name": "serviceOrderId",
+                      "type": "string",
+                      "required": true
+                    }
+                  ],
+                  "output": [
+                    {
+                      "name": "invoiceId",
+                      "type": "string"
+                    },
+                    {
+                      "name": "total",
+                      "type": "number"
+                    }
+                  ]
+                }
+              ],
+              "rulesApplied": [
+                "ruleInvoiceFromServiceOrder",
+                "ruleRoleAccess"
+              ]
+            },
+            {
+              "usecaseId": "updateInvoiceStatus",
+              "title": "Atualizar status da fatura",
+              "purpose": "Atualizar status de faturamento interno.",
+              "actor": "shopOwner",
+              "layer": "layer_3_usecases",
+              "inputEntities": [
+                "serviceOrderCommandUsecaseEntity"
+              ],
+              "outputEntities": [
+                "serviceOrderCommandUsecaseEntity"
+              ],
+              "readsTables": [
+                {
+                  "tableName": "Invoice",
+                  "ownership": "mdmOwned"
+                }
+              ],
+              "writesTables": [
+                {
+                  "tableName": "Invoice",
+                  "ownership": "mdmOwned"
+                },
+                {
+                  "tableName": "invoice_metrics",
+                  "ownership": "moduleOwned"
+                }
+              ],
+              "commands": [
+                {
+                  "commandId": "updateInvoiceStatus",
+                  "input": [
+                    {
+                      "name": "invoiceId",
+                      "type": "string",
+                      "required": true
+                    },
+                    {
+                      "name": "status",
+                      "type": "string",
+                      "required": true
+                    }
+                  ],
+                  "output": [
+                    {
+                      "name": "invoiceId",
+                      "type": "string"
+                    },
+                    {
+                      "name": "status",
+                      "type": "string"
+                    }
+                  ]
+                }
+              ],
+              "rulesApplied": [
+                "ruleRoleAccess"
+              ]
+            },
+            {
+              "usecaseId": "generateMaintenanceForecast",
+              "title": "Gerar manutenção prevista",
+              "purpose": "Gerar ou atualizar previsões de manutenção com base no histórico.",
+              "actor": "shopOwner",
+              "layer": "layer_3_usecases",
+              "inputEntities": [
+                "maintenanceForecastUsecaseEntity",
+                "maintenanceForecastCommandUsecaseEntity"
+              ],
+              "outputEntities": [
+                "maintenanceForecastUsecaseEntity"
+              ],
+              "readsTables": [
+                {
+                  "tableName": "Vehicle",
+                  "ownership": "mdmOwned"
+                },
+                {
+                  "tableName": "ServiceOrder",
+                  "ownership": "mdmOwned"
+                }
+              ],
+              "writesTables": [
+                {
+                  "tableName": "maintenance_forecast",
+                  "ownership": "moduleOwned"
+                },
+                {
+                  "tableName": "maintenance_forecast_command_log",
+                  "ownership": "moduleOwned"
+                },
+                {
+                  "tableName": "maintenance_forecast_metrics",
+                  "ownership": "moduleOwned"
+                }
+              ],
+              "commands": [
+                {
+                  "commandId": "generateMaintenanceForecast",
+                  "input": [
+                    {
+                      "name": "vehicleId",
+                      "type": "string",
+                      "required": true
+                    },
+                    {
+                      "name": "serviceOrderId",
+                      "type": "string",
+                      "required": false
+                    },
+                    {
+                      "name": "forecastDate",
+                      "type": "date",
+                      "required": true
+                    },
+                    {
+                      "name": "forecastMileageKm",
+                      "type": "number",
+                      "required": false
+                    },
+                    {
+                      "name": "forecastType",
+                      "type": "string",
+                      "required": false
+                    }
+                  ],
+                  "output": [
+                    {
+                      "name": "maintenanceForecastId",
+                      "type": "string"
+                    },
+                    {
+                      "name": "status",
+                      "type": "string"
+                    }
+                  ]
+                }
+              ],
+              "rulesApplied": [
+                "ruleMaintenanceForecast",
+                "ruleRoleAccess"
+              ]
+            },
+            {
+              "usecaseId": "requestRepairSuggestion",
+              "title": "Solicitar sugestão de reparo",
+              "purpose": "Gerar e armazenar sugestão de reparo via IA para a OS.",
+              "actor": "mechanic",
+              "layer": "layer_3_usecases",
+              "inputEntities": [
+                "repairSuggestionUsecaseEntity"
+              ],
+              "outputEntities": [
+                "repairSuggestionUsecaseEntity"
+              ],
+              "readsTables": [
+                {
+                  "tableName": "Vehicle",
+                  "ownership": "mdmOwned"
+                },
+                {
+                  "tableName": "ServiceOrder",
+                  "ownership": "mdmOwned"
+                }
+              ],
+              "writesTables": [
+                {
+                  "tableName": "repair_suggestion",
+                  "ownership": "moduleOwned"
+                }
+              ],
+              "commands": [
+                {
+                  "commandId": "requestRepairSuggestion",
+                  "input": [
+                    {
+                      "name": "vehicleId",
+                      "type": "string",
+                      "required": true
+                    },
+                    {
+                      "name": "serviceOrderId",
+                      "type": "string",
+                      "required": false
+                    },
+                    {
+                      "name": "issueDescription",
+                      "type": "string",
+                      "required": true
+                    }
+                  ],
+                  "output": [
+                    {
+                      "name": "repairSuggestionId",
+                      "type": "string"
+                    },
+                    {
+                      "name": "suggestionStatus",
+                      "type": "string"
+                    }
+                  ]
+                }
+              ],
+              "rulesApplied": [
+                "ruleRoleAccess"
+              ]
+            },
+            {
+              "usecaseId": "viewVehicleHistory",
+              "title": "Consultar histórico do veículo",
+              "purpose": "Consultar histórico completo de serviços, peças e custos por veículo/cliente.",
+              "actor": "shopOwner",
+              "layer": "layer_3_usecases",
+              "inputEntities": [],
+              "outputEntities": [],
+              "readsTables": [
+                {
+                  "tableName": "Customer",
+                  "ownership": "mdmOwned"
+                },
+                {
+                  "tableName": "Vehicle",
+                  "ownership": "mdmOwned"
+                },
+                {
+                  "tableName": "ServiceOrder",
+                  "ownership": "mdmOwned"
+                },
+                {
+                  "tableName": "Invoice",
+                  "ownership": "mdmOwned"
+                },
+                {
+                  "tableName": "labor_item",
+                  "ownership": "moduleOwned"
+                }
+              ],
+              "writesTables": [],
+              "commands": [
+                {
+                  "commandId": "viewVehicleHistory",
+                  "input": [
+                    {
+                      "name": "vehicleId",
+                      "type": "string",
+                      "required": true
+                    },
+                    {
+                      "name": "customerId",
+                      "type": "string",
+                      "required": false
+                    }
+                  ],
+                  "output": [
+                    {
+                      "name": "serviceOrdersCount",
+                      "type": "number"
+                    },
+                    {
+                      "name": "totalSpent",
+                      "type": "number"
+                    }
+                  ]
+                }
+              ],
+              "rulesApplied": [
+                "ruleRoleAccess"
+              ]
+            },
+            {
+              "usecaseId": "viewDashboardMetrics",
+              "title": "Visualizar dashboard operacional",
+              "purpose": "Consultar métricas operacionais consolidadas para o painel.",
+              "actor": "shopOwner",
+              "layer": "layer_3_usecases",
+              "inputEntities": [],
+              "outputEntities": [],
+              "readsTables": [
+                {
+                  "tableName": "service_order_metrics",
+                  "ownership": "moduleOwned"
+                },
+                {
+                  "tableName": "inventory_metrics",
+                  "ownership": "moduleOwned"
+                },
+                {
+                  "tableName": "invoice_metrics",
+                  "ownership": "moduleOwned"
+                },
+                {
+                  "tableName": "maintenance_forecast_metrics",
+                  "ownership": "moduleOwned"
+                }
+              ],
+              "writesTables": [],
+              "commands": [
+                {
+                  "commandId": "viewDashboardMetrics",
+                  "input": [],
+                  "output": [
+                    {
+                      "name": "openServiceOrders",
+                      "type": "number"
+                    },
+                    {
+                      "name": "monthlyRevenue",
+                      "type": "number"
+                    },
+                    {
+                      "name": "upcomingMaintenance",
+                      "type": "number"
+                    },
+                    {
+                      "name": "lowStockCount",
+                      "type": "number"
+                    }
+                  ]
+                }
+              ],
+              "rulesApplied": [
+                "ruleRoleAccess"
+              ]
+            }
+          ],
+          "controllerRules": {
+            "bffMustCallUsecases": true,
+            "bffDirectTableAccessForbidden": true
+          }
+        },
+        "questions": [],
+        "trace": [
+          "Mapeei entidades de caso de uso para tabelas transacionais e logs do módulo.",
+          "Criei casos de uso para comandos de OS, estoque, fatura, manutenção prevista e IA.",
+          "Incluí atualização de métricas nos casos de uso que escrevem tabelas base.",
+          "Adicionei casos de leitura para histórico de veículo e dashboard de métricas."
+        ]
+      }
+    },
+    "status": "completed",
+    "stepId": 45,
+    "interaction": null,
+    "nextSteps": null
+  }
+}

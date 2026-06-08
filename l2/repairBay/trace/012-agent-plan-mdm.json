@@ -1,0 +1,151 @@
+{
+  "savedAt": "2026-06-08T23:17:06.082Z",
+  "agentName": "agentPlanMDM",
+  "stepId": 12,
+  "planning": {
+    "planId": "plan-mdm",
+    "dependsOn": [
+      "plan-finalize-solution-plan"
+    ],
+    "executionMode": "parallel_static",
+    "executionHost": "client"
+  },
+  "status": "waiting_after_prompt",
+  "payload": {
+    "type": "flexible",
+    "result": {
+      "toolName": "submitMdmPlan",
+      "arguments": {
+        "status": "ok",
+        "result": {
+          "mdmDomains": [
+            {
+              "domainId": "customer",
+              "title": "Cliente",
+              "masterEntities": [
+                "Customer"
+              ],
+              "sourceOfTruth": "customerMasterData",
+              "consumers": [
+                "customerManagementPage",
+                "vehicleManagementPage",
+                "vehicleHistoryPage"
+              ],
+              "governanceRules": [
+                "Dados de contato mínimos obrigatórios para cadastro.",
+                "Cliente não pode ser excluído se possuir veículos ou OS vinculadas.",
+                "Atualizações restritas ao perfil atendente e dono da oficina."
+              ]
+            },
+            {
+              "domainId": "vehicle",
+              "title": "Veículo",
+              "masterEntities": [
+                "Vehicle"
+              ],
+              "sourceOfTruth": "vehicleMasterData",
+              "consumers": [
+                "vehicleManagementPage",
+                "vehicleHistoryPage",
+                "maintenanceForecastWorkflow",
+                "maintenanceForecastUsecaseEntities",
+                "repairSuggestionAgent"
+              ],
+              "governanceRules": [
+                "Veículo deve estar vinculado a um cliente ativo.",
+                "Identificação única por placa ou VIN.",
+                "Dados de veículo são consumidos por OS, histórico e manutenção prevista."
+              ]
+            },
+            {
+              "domainId": "serviceOrder",
+              "title": "Ordem de Serviço",
+              "masterEntities": [
+                "ServiceOrder"
+              ],
+              "sourceOfTruth": "serviceOrderMasterData",
+              "consumers": [
+                "serviceOrderListPage",
+                "serviceOrderDetailPage",
+                "billingPage",
+                "vehicleHistoryPage",
+                "serviceOrderWorkflow",
+                "serviceOrderUsecaseEntities",
+                "invoiceUsecaseEntities",
+                "billingWorkflow",
+                "metricTableOps",
+                "repairSuggestionAgent",
+                "maintenanceForecastWorkflow",
+                "maintenanceForecastUsecaseEntities"
+              ],
+              "governanceRules": [
+                "Ciclo de vida padronizado: aberta → em execução → aguardando peça → concluída → fechada/cancelada.",
+                "Total calculado pela soma de mão de obra e peças, com impostos/descontos configuráveis.",
+                "Fechamento permitido apenas após conclusão dos serviços."
+              ]
+            },
+            {
+              "domainId": "partInventory",
+              "title": "Peça e Estoque",
+              "masterEntities": [
+                "Part",
+                "InventoryStock"
+              ],
+              "sourceOfTruth": "partInventoryMasterData",
+              "consumers": [
+                "partsInventoryPage",
+                "serviceOrderDetailPage",
+                "inventoryAlertWorkflow",
+                "inventoryAdjustUsecaseEntities",
+                "serviceOrderUsecaseEntities",
+                "metricTableOps",
+                "inventoryLowStockMetric"
+              ],
+              "governanceRules": [
+                "Cada peça deve ter código único e registro de estoque associado.",
+                "Alerta operacional quando estoque abaixo do nível mínimo configurado.",
+                "Baixa de estoque vinculada ao consumo em OS."
+              ]
+            },
+            {
+              "domainId": "invoice",
+              "title": "Fatura",
+              "masterEntities": [
+                "Invoice"
+              ],
+              "sourceOfTruth": "invoiceMasterData",
+              "consumers": [
+                "billingPage",
+                "vehicleHistoryPage",
+                "billingWorkflow",
+                "invoiceUsecaseEntities",
+                "metricTableOps"
+              ],
+              "governanceRules": [
+                "Fatura gerada exclusivamente a partir de OS concluída.",
+                "Total da fatura deve refletir o valor consolidado da OS.",
+                "Status de faturamento atualizado pelo fluxo próprio de billingWorkflow."
+              ]
+            }
+          ]
+        },
+        "questions": [
+          "Qual o identificador único do cliente será adotado (CPF/CNPJ, e-mail ou código interno)?",
+          "Veículos serão identificados unicamente por placa, VIN ou ambos?",
+          "Peças terão código próprio da oficina, código de fabricante/original ou ambos?"
+        ],
+        "trace": [
+          "Mapeados 5 domínios de MDM obrigatórios a partir da ontologia e artefatos aprovados: Cliente, Veículo, Ordem de Serviço, Peça/Estoque e Fatura.",
+          "Cliente classificado como party MDM por ser parte externa; Veículo como asset MDM por ser objeto de manutenção e histórico.",
+          "Ordem de Serviço definida como núcleo operacional com ciclo de vida e cálculo de custos.",
+          "Peça e Estoque consolidados em um domínio devido ao relacionamento um-para-um e controle conjunto de reposição.",
+          "Consumidores de cada domínio vinculados às páginas, workflows, entidades de caso de uso, tabela de métricas e agente de IA que referenciam as entidades mestre."
+        ]
+      }
+    },
+    "status": "completed",
+    "stepId": 35,
+    "interaction": null,
+    "nextSteps": null
+  }
+}

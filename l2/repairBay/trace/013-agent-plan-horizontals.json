@@ -1,0 +1,60 @@
+{
+  "savedAt": "2026-06-08T23:16:09.946Z",
+  "agentName": "agentPlanHorizontals",
+  "stepId": 13,
+  "planning": {
+    "planId": "plan-horizontals",
+    "dependsOn": [
+      "plan-finalize-solution-plan"
+    ],
+    "executionMode": "parallel_static",
+    "executionHost": "client"
+  },
+  "status": "waiting_after_prompt",
+  "payload": {
+    "type": "flexible",
+    "result": {
+      "toolName": "submitHorizontalPlan",
+      "arguments": {
+        "status": "ok",
+        "result": {
+          "horizontalModules": [
+            {
+              "horizontalModuleId": "finance",
+              "priority": "now",
+              "reason": "Escopo inclui faturamento com faturas vinculadas à OS no MVP.",
+              "reusedOntologyRefs": [
+                "Invoice"
+              ],
+              "consumedByArtifacts": [
+                "billingWorkflow",
+                "billingPage",
+                "invoiceMasterData"
+              ]
+            },
+            {
+              "horizontalModuleId": "notifications",
+              "priority": "soon",
+              "reason": "Alertas de estoque baixo exigem comunicação operacional dedicada.",
+              "reusedOntologyRefs": [],
+              "consumedByArtifacts": [
+                "inventoryAlertWorkflow",
+                "partsInventoryPage"
+              ]
+            }
+          ]
+        },
+        "questions": [],
+        "trace": [
+          "Incluí Financeiro por faturamento e faturas no escopo aprovado.",
+          "Incluí Notificações devido ao workflow de alerta de estoque.",
+          "Documentos não incluído por falta de necessidade de contratos, assinaturas ou anexos no plano."
+        ]
+      }
+    },
+    "status": "completed",
+    "stepId": 35,
+    "interaction": null,
+    "nextSteps": null
+  }
+}

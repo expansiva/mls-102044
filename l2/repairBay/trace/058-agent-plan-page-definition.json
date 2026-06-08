@@ -1,0 +1,203 @@
+{
+  "savedAt": "2026-06-08T23:28:28.670Z",
+  "agentName": "agentPlanPageDefinition",
+  "stepId": 58,
+  "planning": null,
+  "status": "waiting_after_prompt",
+  "payload": {
+    "type": "flexible",
+    "result": {
+      "toolName": "submitPageDefinitionPlan",
+      "arguments": {
+        "status": "needs_input",
+        "result": {
+          "pageDefinition": {
+            "pageId": "inventoryAdjust",
+            "pageName": "Ajuste de estoque",
+            "actor": "shopOwner",
+            "purpose": "Registrar ajuste de estoque de peça.",
+            "capabilities": [
+              "partsInventoryControl"
+            ],
+            "flowRefs": {
+              "experienceFlows": [],
+              "entityLifecycles": [],
+              "taskWorkflows": [],
+              "automations": [
+                "inventoryAlertWorkflow"
+              ]
+            },
+            "pluginRefs": [],
+            "mdmRefs": [
+              "partInventory"
+            ],
+            "pageInputs": [
+              {
+                "name": "partId",
+                "type": "string",
+                "sources": [
+                  "routeParam",
+                  "previousStepResult"
+                ],
+                "description": "Peça pré-selecionada para ajuste, quando vindo da lista de estoque.",
+                "entityRef": "Part",
+                "fieldRef": "partId"
+              },
+              {
+                "name": "inventoryStockId",
+                "type": "string",
+                "sources": [
+                  "routeParam",
+                  "previousStepResult"
+                ],
+                "description": "Estoque pré-selecionado para ajuste, quando vindo da lista de estoque.",
+                "entityRef": "InventoryStock",
+                "fieldRef": "inventoryStockId"
+              }
+            ],
+            "navigationRefs": [
+              {
+                "direction": "inbound",
+                "pageId": "inventoryList",
+                "trigger": "Ação ajustar estoque"
+              }
+            ],
+            "sections": [
+              {
+                "sectionName": "Peça e estoque alvo",
+                "mode": "edit",
+                "organisms": [
+                  {
+                    "organismName": "identificacaoEstoque",
+                    "purpose": "Confirmar peça e estoque a serem ajustados.",
+                    "userActions": [
+                      "Confirmar peça selecionada",
+                      "Alterar referência de peça/estoque (quando permitido)"
+                    ],
+                    "requiredEntities": [
+                      "InventoryStock",
+                      "Part"
+                    ],
+                    "readsFields": [
+                      "InventoryStock.inventoryStockId",
+                      "Part.partId"
+                    ],
+                    "writesFields": [],
+                    "rulesApplied": [
+                      "ruleRoleAccess"
+                    ]
+                  }
+                ]
+              },
+              {
+                "sectionName": "Dados do ajuste",
+                "mode": "edit",
+                "organisms": [
+                  {
+                    "organismName": "formularioAjusteEstoque",
+                    "purpose": "Informar quantidade e motivo do ajuste e registrar o comando.",
+                    "userActions": [
+                      "Informar variação de quantidade",
+                      "Informar motivo",
+                      "Confirmar ajuste"
+                    ],
+                    "requiredEntities": [
+                      "InventoryAdjustmentCommand"
+                    ],
+                    "readsFields": [],
+                    "writesFields": [
+                      "InventoryAdjustmentCommand.inventoryStockId",
+                      "InventoryAdjustmentCommand.partId",
+                      "InventoryAdjustmentCommand.quantityDelta",
+                      "InventoryAdjustmentCommand.reasonCode"
+                    ],
+                    "rulesApplied": [
+                      "ruleRoleAccess",
+                      "ruleInventoryLowStock"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "bffCommands": [
+            {
+              "commandName": "adjustInventory",
+              "purpose": "Registrar ajuste de estoque",
+              "kind": "command",
+              "input": [
+                {
+                  "name": "inventoryStockId",
+                  "type": "string",
+                  "required": true
+                },
+                {
+                  "name": "partId",
+                  "type": "string",
+                  "required": true
+                },
+                {
+                  "name": "quantityDelta",
+                  "type": "number",
+                  "required": true
+                },
+                {
+                  "name": "reasonCode",
+                  "type": "string",
+                  "required": false
+                }
+              ],
+              "output": [
+                {
+                  "name": "newQuantity",
+                  "type": "number"
+                }
+              ],
+              "readsEntities": [
+                "InventoryStock",
+                "Part"
+              ],
+              "writesEntities": [
+                "InventoryAdjustmentCommand"
+              ],
+              "readsTables": [],
+              "writesTables": [
+                "inventory_adjustment_command_log",
+                "inventory_metrics"
+              ],
+              "usecaseRefs": [
+                "adjustInventory"
+              ],
+              "layerContract": {
+                "controllerLayer": "layer_2_controllers",
+                "mustCallLayer": "layer_3_usecases",
+                "directTableAccessForbidden": true
+              },
+              "rulesApplied": [
+                "ruleInventoryLowStock",
+                "ruleRoleAccess"
+              ]
+            }
+          ]
+        },
+        "questions": [
+          "Existe um caso de uso/BFF autorizado para buscar detalhes de peça/estoque (ex.: localizar InventoryStock e Part para seleção) quando partId/inventoryStockId não vierem pré-selecionados? Se sim, qual o usecaseId e campos necessários?",
+          "O ajuste de estoque pode ser iniciado sem referência prévia (ou seja, página deve exigir inventoryStockId/partId como obrigatórios)?",
+          "O reasonCode deve ser obrigatório ou usa catálogo/enum específico de motivos? Se houver, informe o id do enum/catálogo."
+        ],
+        "trace": [
+          "pageSelector=inventoryAdjust",
+          "pageInputHints: partId opcional pré-selecionado",
+          "usecaseHints: adjustInventory",
+          "bffCommandHints: adjustInventory(partId, quantidade, motivo) -> saldo atualizado",
+          "rulesApplied: ruleRoleAccess",
+          "automationRefs: inventoryAlertWorkflow"
+        ]
+      }
+    },
+    "status": "completed",
+    "stepId": 62,
+    "interaction": null,
+    "nextSteps": null
+  }
+}

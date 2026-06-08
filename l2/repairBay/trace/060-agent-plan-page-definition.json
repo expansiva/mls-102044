@@ -1,0 +1,197 @@
+{
+  "savedAt": "2026-06-08T23:28:40.218Z",
+  "agentName": "agentPlanPageDefinition",
+  "stepId": 60,
+  "planning": null,
+  "status": "waiting_after_prompt",
+  "payload": {
+    "type": "flexible",
+    "result": {
+      "toolName": "submitPageDefinitionPlan",
+      "arguments": {
+        "status": "needs_input",
+        "result": {
+          "pageDefinition": {
+            "pageId": "invoiceDetail",
+            "pageName": "Detalhe da fatura",
+            "actor": "shopOwner",
+            "purpose": "Atualizar status e visualizar detalhes da fatura.",
+            "capabilities": [
+              "billingManagement"
+            ],
+            "flowRefs": {
+              "experienceFlows": [],
+              "entityLifecycles": [
+                "billingWorkflow"
+              ],
+              "taskWorkflows": [],
+              "automations": []
+            },
+            "pluginRefs": [],
+            "mdmRefs": [
+              "invoice",
+              "serviceOrder"
+            ],
+            "pageInputs": [
+              {
+                "name": "invoiceId",
+                "type": "string",
+                "required": true,
+                "sources": [
+                  "routeParam"
+                ],
+                "description": "Identificador da fatura a ser visualizada e atualizada.",
+                "entityRef": "Invoice",
+                "fieldRef": "invoiceId"
+              }
+            ],
+            "navigationRefs": [
+              {
+                "direction": "inbound",
+                "pageId": "invoiceList",
+                "trigger": "Abrir fatura"
+              }
+            ],
+            "sections": [
+              {
+                "sectionName": "Identificação da fatura",
+                "mode": "view",
+                "organisms": [
+                  {
+                    "organismName": "InvoiceIdentitySummary",
+                    "purpose": "Exibir identificadores básicos da fatura selecionada.",
+                    "userActions": [],
+                    "requiredEntities": [
+                      "Invoice"
+                    ],
+                    "readsFields": [
+                      "invoiceId"
+                    ],
+                    "writesFields": [],
+                    "rulesApplied": [
+                      "ruleRoleAccess"
+                    ]
+                  }
+                ]
+              },
+              {
+                "sectionName": "Detalhes e vínculo com OS",
+                "mode": "view",
+                "organisms": [
+                  {
+                    "organismName": "InvoiceDetails",
+                    "purpose": "Exibir dados da fatura e da OS vinculada.",
+                    "userActions": [],
+                    "requiredEntities": [
+                      "Invoice",
+                      "ServiceOrder"
+                    ],
+                    "readsFields": [
+                      "status",
+                      "totalAmount",
+                      "issuedDate",
+                      "serviceOrderId"
+                    ],
+                    "writesFields": [],
+                    "rulesApplied": [
+                      "ruleInvoiceFromServiceOrder",
+                      "ruleRoleAccess"
+                    ]
+                  }
+                ]
+              },
+              {
+                "sectionName": "Atualizar status",
+                "mode": "edit",
+                "organisms": [
+                  {
+                    "organismName": "InvoiceStatusUpdateForm",
+                    "purpose": "Atualizar o status da fatura conforme o fluxo de faturamento.",
+                    "userActions": [
+                      "updateInvoiceStatus"
+                    ],
+                    "requiredEntities": [
+                      "Invoice"
+                    ],
+                    "readsFields": [
+                      "status"
+                    ],
+                    "writesFields": [
+                      "status"
+                    ],
+                    "rulesApplied": [
+                      "ruleRoleAccess"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "bffCommands": [
+            {
+              "commandName": "updateInvoiceStatus",
+              "purpose": "Atualizar status da fatura.",
+              "kind": "command",
+              "input": [
+                {
+                  "name": "invoiceId",
+                  "type": "string",
+                  "required": true
+                },
+                {
+                  "name": "status",
+                  "type": "string",
+                  "required": true
+                }
+              ],
+              "output": [
+                {
+                  "name": "invoiceId",
+                  "type": "string"
+                },
+                {
+                  "name": "status",
+                  "type": "string"
+                }
+              ],
+              "readsEntities": [
+                "Invoice"
+              ],
+              "writesEntities": [
+                "Invoice",
+                "serviceOrderCommandUsecaseEntity"
+              ],
+              "readsTables": [],
+              "writesTables": [
+                "invoice_metrics"
+              ],
+              "usecaseRefs": [
+                "updateInvoiceStatus"
+              ],
+              "layerContract": {
+                "controllerLayer": "layer_2_controllers",
+                "mustCallLayer": "layer_3_usecases",
+                "directTableAccessForbidden": true
+              },
+              "rulesApplied": [
+                "ruleRoleAccess"
+              ]
+            }
+          ]
+        },
+        "questions": [
+          "Qual é o usecase (id) autorizado para consultar os detalhes da fatura e da OS vinculada nesta página? Não há usecase de leitura listado para suportar o carregamento da fatura."
+        ],
+        "trace": [
+          "Selector invoiceDetail",
+          "Usecase disponível: updateInvoiceStatus",
+          "Faltando usecase de leitura para getInvoice"
+        ]
+      }
+    },
+    "status": "completed",
+    "stepId": 62,
+    "interaction": null,
+    "nextSteps": null
+  }
+}

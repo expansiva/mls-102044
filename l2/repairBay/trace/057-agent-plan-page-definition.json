@@ -1,0 +1,145 @@
+{
+  "savedAt": "2026-06-08T23:28:28.784Z",
+  "agentName": "agentPlanPageDefinition",
+  "stepId": 57,
+  "planning": null,
+  "status": "waiting_after_prompt",
+  "payload": {
+    "type": "flexible",
+    "result": {
+      "toolName": "submitPageDefinitionPlan",
+      "arguments": {
+        "status": "ok",
+        "result": {
+          "pageDefinition": {
+            "pageId": "metricsDashboard",
+            "pageName": "Dashboard de métricas",
+            "actor": "shopOwner",
+            "purpose": "Acompanhar métricas consolidadas do negócio.",
+            "capabilities": [
+              "dashboardInsights"
+            ],
+            "flowRefs": {
+              "experienceFlows": [],
+              "entityLifecycles": [],
+              "taskWorkflows": [],
+              "automations": []
+            },
+            "pluginRefs": [],
+            "mdmRefs": [],
+            "pageInputs": [],
+            "navigationRefs": [],
+            "sections": [
+              {
+                "sectionName": "Resumo de métricas",
+                "mode": "view",
+                "organisms": [
+                  {
+                    "organismName": "cardsResumoMetricas",
+                    "purpose": "Exibir indicadores consolidados do negócio.",
+                    "userActions": [
+                      "viewDashboard"
+                    ],
+                    "requiredEntities": [],
+                    "readsFields": [
+                      "openServiceOrders",
+                      "monthlyRevenue",
+                      "upcomingMaintenance",
+                      "lowStockCount"
+                    ],
+                    "writesFields": [],
+                    "rulesApplied": [
+                      "ruleRoleAccess"
+                    ]
+                  }
+                ]
+              },
+              {
+                "sectionName": "Detalhamento de métricas",
+                "mode": "view",
+                "organisms": [
+                  {
+                    "organismName": "tabelaMetricasConsolidadas",
+                    "purpose": "Apresentar tabelas consolidadas de métricas operacionais.",
+                    "userActions": [
+                      "viewDashboard"
+                    ],
+                    "requiredEntities": [],
+                    "readsFields": [
+                      "openServiceOrders",
+                      "monthlyRevenue",
+                      "upcomingMaintenance",
+                      "lowStockCount"
+                    ],
+                    "writesFields": [],
+                    "rulesApplied": [
+                      "ruleRoleAccess"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "bffCommands": [
+            {
+              "commandName": "getMetricDashboard",
+              "purpose": "Carregar tabelas de métricas",
+              "kind": "query",
+              "input": [],
+              "output": [
+                {
+                  "name": "openServiceOrders",
+                  "type": "number"
+                },
+                {
+                  "name": "monthlyRevenue",
+                  "type": "number"
+                },
+                {
+                  "name": "upcomingMaintenance",
+                  "type": "number"
+                },
+                {
+                  "name": "lowStockCount",
+                  "type": "number"
+                }
+              ],
+              "readsEntities": [],
+              "writesEntities": [],
+              "readsTables": [
+                "service_order_metrics",
+                "inventory_metrics",
+                "invoice_metrics",
+                "maintenance_forecast_metrics"
+              ],
+              "writesTables": [],
+              "usecaseRefs": [
+                "viewDashboardMetrics"
+              ],
+              "layerContract": {
+                "controllerLayer": "layer_2_controllers",
+                "mustCallLayer": "layer_3_usecases",
+                "directTableAccessForbidden": true
+              },
+              "rulesApplied": [
+                "ruleRoleAccess"
+              ]
+            }
+          ]
+        },
+        "questions": [],
+        "trace": [
+          "Page selector metricsDashboard aplicado.",
+          "Capacidade dashboardInsights mapeada para visão de métricas consolidadas.",
+          "Use case viewDashboardMetrics ligado ao comando BFF getMetricDashboard.",
+          "Métricas lidas via use case; tabelas de métricas somente em readsTables.",
+          "Nenhuma pageInput exigida para abertura standalone do dashboard."
+        ]
+      }
+    },
+    "status": "completed",
+    "stepId": 62,
+    "interaction": null,
+    "nextSteps": null
+  }
+}

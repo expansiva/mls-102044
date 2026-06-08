@@ -1,0 +1,196 @@
+/// <mls fileReference="_102044_/l4/workflows/inventoryAlertWorkflow.defs.ts" enhancement="_blank"/>
+
+export const inventoryAlertWorkflowDef = {
+  "schemaVersion": "2026-06-06",
+  "artifactType": "workflow",
+  "artifactId": "inventoryAlertWorkflow",
+  "moduleName": "repairBay",
+  "status": "draft",
+  "source": {
+    "agentName": "agentPlanWorkflowDefinition",
+    "stepId": 53,
+    "planId": ""
+  },
+  "data": {
+    "workflowDefinition": {
+      "workflowId": "inventoryAlertWorkflow",
+      "title": "Alerta de Estoque",
+      "purpose": "Monitorar níveis de peças e disparar alertas operacionais quando o estoque estiver abaixo do mínimo configurado, gerando ações para reposição.",
+      "executionMode": "automation",
+      "createsTask": true,
+      "taskConfig": {
+        "taskTitleTemplate": "Revisar estoque baixo: {{partName}}",
+        "assigneeRules": [
+          "assignToRole:shopOwner"
+        ],
+        "slaRules": [
+          "dueIn:24h"
+        ],
+        "taskRoomRequired": false
+      },
+      "actors": [
+        "shopOwner"
+      ],
+      "states": [
+        {
+          "stateId": "monitoring",
+          "description": "Estoque monitorado aguardando verificações periódicas ou ajustes registrados."
+        },
+        {
+          "stateId": "lowStockDetected",
+          "description": "Estoque abaixo do mínimo configurado identificado para uma ou mais peças."
+        },
+        {
+          "stateId": "taskCreated",
+          "description": "Tarefa de reposição criada e aguardando ação do dono da oficina."
+        },
+        {
+          "stateId": "resolved",
+          "description": "Ação de reposição confirmada ou estoque normalizado."
+        }
+      ],
+      "transitions": [
+        {
+          "from": "monitoring",
+          "to": "lowStockDetected",
+          "trigger": "scheduledStockCheck",
+          "actor": "shopOwner",
+          "conditions": [
+            "ruleInventoryLowStock"
+          ],
+          "actions": [],
+          "rulesApplied": [
+            "ruleInventoryLowStock",
+            "ruleRoleAccess"
+          ]
+        },
+        {
+          "from": "monitoring",
+          "to": "lowStockDetected",
+          "trigger": "inventoryAdjustmentLogged",
+          "actor": "shopOwner",
+          "conditions": [
+            "ruleInventoryLowStock"
+          ],
+          "actions": [],
+          "rulesApplied": [
+            "ruleInventoryLowStock",
+            "ruleRoleAccess"
+          ]
+        },
+        {
+          "from": "lowStockDetected",
+          "to": "taskCreated",
+          "trigger": "createLowStockTask",
+          "actor": "shopOwner",
+          "conditions": [],
+          "actions": [],
+          "rulesApplied": [
+            "ruleRoleAccess"
+          ]
+        },
+        {
+          "from": "taskCreated",
+          "to": "resolved",
+          "trigger": "confirmReplenishment",
+          "actor": "shopOwner",
+          "conditions": [],
+          "actions": [],
+          "rulesApplied": [
+            "ruleRoleAccess"
+          ]
+        }
+      ],
+      "requiredEntities": [
+        "InventoryStock",
+        "Part",
+        "InventoryAdjustmentCommand"
+      ],
+      "persistenceRefs": [
+        "inventoryAdjustmentCommandLog"
+      ],
+      "usecaseRefs": [
+        "inventoryAdjustUsecaseEntities"
+      ],
+      "metricRefs": [
+        "inventoryMetrics"
+      ],
+      "userActions": [
+        "Executar verificação diária de estoque",
+        "Revisar tarefa de reposição",
+        "Confirmar reposição de peças"
+      ],
+      "relatedPages": [],
+      "relatedAgents": [],
+      "relatedPlugins": [],
+      "rulesApplied": [
+        "ruleInventoryLowStock",
+        "ruleRoleAccess"
+      ],
+      "implementationSuggestions": [
+        {
+          "suggestionId": "autoTaskLowStock",
+          "title": "Gerar tarefa automática para estoque baixo",
+          "priority": "now",
+          "description": "Quando o estoque ficar abaixo do mínimo, criar tarefa para o dono da oficina revisar e reabastecer.",
+          "tradeoff": "Aumenta a carga de tarefas diárias, mas melhora a disciplina de reposição."
+        },
+        {
+          "suggestionId": "scheduledStockCheck",
+          "title": "Verificação agendada de estoque",
+          "priority": "now",
+          "description": "Executar rotina diária para avaliar níveis de estoque e disparar alertas de forma proativa.",
+          "tradeoff": "Processamento recorrente diário, porém reduz risco de ruptura de estoque."
+        }
+      ],
+      "workflowScope": "singleModule",
+      "moduleRefs": [
+        "repairBay"
+      ],
+      "pageRefsByModule": [],
+      "entityRefsByModule": [
+        {
+          "moduleId": "repairBay",
+          "entity": "InventoryStock"
+        },
+        {
+          "moduleId": "repairBay",
+          "entity": "Part"
+        },
+        {
+          "moduleId": "repairBay",
+          "entity": "InventoryAdjustmentCommand"
+        }
+      ],
+      "writesArtifacts": [
+        {
+          "moduleId": "repairBay",
+          "artifactType": "workflow",
+          "artifactId": "inventoryAlertWorkflow"
+        },
+        {
+          "moduleId": "repairBay",
+          "artifactType": "table",
+          "artifactId": "inventoryAdjustmentCommandLog"
+        },
+        {
+          "moduleId": "repairBay",
+          "artifactType": "metricTable",
+          "artifactId": "inventoryMetrics"
+        },
+        {
+          "moduleId": "repairBay",
+          "artifactType": "usecase",
+          "artifactId": "inventoryAdjustUsecaseEntities"
+        }
+      ]
+    },
+    "defsPlan": {
+      "fileName": "workflows/inventoryAlertWorkflow.defs.ts",
+      "exportName": "inventoryAlertWorkflowDef",
+      "saveAsDefs": true
+    }
+  }
+} as const;
+
+export default inventoryAlertWorkflowDef;
