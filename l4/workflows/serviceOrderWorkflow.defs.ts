@@ -1,0 +1,315 @@
+/// <mls fileReference="_102044_/l4/workflows/serviceOrderWorkflow.defs.ts" enhancement="_blank"/>
+
+export const serviceOrderWorkflowDef = {
+  "schemaVersion": "2026-06-06",
+  "artifactType": "workflow",
+  "artifactId": "serviceOrderWorkflow",
+  "moduleName": "repairBay",
+  "status": "draft",
+  "source": {
+    "agentName": "agentPlanWorkflowDefinition",
+    "stepId": 52,
+    "planId": ""
+  },
+  "data": {
+    "workflowDefinition": {
+      "workflowId": "serviceOrderWorkflow",
+      "title": "Fluxo da Ordem de Serviço",
+      "purpose": "Gerenciar o ciclo de vida da OS desde a abertura até o fechamento, coordenando ações entre atendente e mecânico, registrando mão de obra, peças e transições de status.",
+      "executionMode": "taskWorkflow",
+      "createsTask": true,
+      "taskConfig": {
+        "taskTitleTemplate": "OS {{serviceOrderId}} - {{status}}",
+        "assigneeRules": [
+          "attendantReceivesWhenStatusCompleted",
+          "mechanicReceivesWhenStatusInExecution"
+        ],
+        "slaRules": [
+          "inExecutionSla24h",
+          "completedSla8h"
+        ],
+        "taskRoomRequired": true
+      },
+      "actors": [
+        "attendant",
+        "mechanic"
+      ],
+      "states": [
+        {
+          "stateId": "opened",
+          "description": "OS aberta aguardando início dos serviços."
+        },
+        {
+          "stateId": "inExecution",
+          "description": "OS em execução pelo mecânico."
+        },
+        {
+          "stateId": "waitingPart",
+          "description": "OS aguardando chegada de peça."
+        },
+        {
+          "stateId": "completed",
+          "description": "Serviços concluídos aguardando fechamento pelo atendente."
+        },
+        {
+          "stateId": "closed",
+          "description": "OS fechada e finalizada."
+        },
+        {
+          "stateId": "canceled",
+          "description": "OS cancelada."
+        }
+      ],
+      "transitions": [
+        {
+          "from": "opened",
+          "to": "inExecution",
+          "trigger": "startService",
+          "actor": "mechanic",
+          "conditions": [
+            "ruleServiceOrderStatus",
+            "ruleRoleAccess"
+          ],
+          "actions": [
+            "ServiceOrder.status=em_execucao",
+            "ServiceOrderCommand.commandType=iniciar_execucao"
+          ],
+          "rulesApplied": [
+            "ruleServiceOrderStatus",
+            "ruleRoleAccess"
+          ]
+        },
+        {
+          "from": "inExecution",
+          "to": "waitingPart",
+          "trigger": "awaitPart",
+          "actor": "mechanic",
+          "conditions": [
+            "ruleServiceOrderStatus",
+            "ruleRoleAccess"
+          ],
+          "actions": [
+            "ServiceOrder.status=aguardando_peca",
+            "ServiceOrderCommand.commandType=aguardar_peca"
+          ],
+          "rulesApplied": [
+            "ruleServiceOrderStatus",
+            "ruleRoleAccess"
+          ]
+        },
+        {
+          "from": "waitingPart",
+          "to": "inExecution",
+          "trigger": "partArrived",
+          "actor": "mechanic",
+          "conditions": [
+            "ruleServiceOrderStatus",
+            "ruleRoleAccess"
+          ],
+          "actions": [
+            "ServiceOrder.status=em_execucao",
+            "ServiceOrderCommand.commandType=retomar_execucao"
+          ],
+          "rulesApplied": [
+            "ruleServiceOrderStatus",
+            "ruleRoleAccess"
+          ]
+        },
+        {
+          "from": "inExecution",
+          "to": "inExecution",
+          "trigger": "addLaborItem",
+          "actor": "mechanic",
+          "conditions": [
+            "ruleRoleAccess",
+            "ruleServiceOrderTotal"
+          ],
+          "actions": [
+            "LaborItem.status=pending",
+            "ServiceOrderCommand.commandType=registrar_mao_de_obra"
+          ],
+          "rulesApplied": [
+            "ruleServiceOrderTotal",
+            "ruleRoleAccess"
+          ]
+        },
+        {
+          "from": "inExecution",
+          "to": "completed",
+          "trigger": "completeService",
+          "actor": "mechanic",
+          "conditions": [
+            "ruleServiceOrderStatus",
+            "ruleRoleAccess"
+          ],
+          "actions": [
+            "ServiceOrder.status=concluida",
+            "ServiceOrderCommand.commandType=concluir_servico"
+          ],
+          "rulesApplied": [
+            "ruleServiceOrderStatus",
+            "ruleRoleAccess"
+          ]
+        },
+        {
+          "from": "completed",
+          "to": "closed",
+          "trigger": "closeServiceOrder",
+          "actor": "attendant",
+          "conditions": [
+            "ruleServiceOrderStatus",
+            "ruleRoleAccess"
+          ],
+          "actions": [
+            "ServiceOrder.status=fechada",
+            "ServiceOrderCommand.commandType=fechar_os"
+          ],
+          "rulesApplied": [
+            "ruleServiceOrderStatus",
+            "ruleRoleAccess"
+          ]
+        },
+        {
+          "from": "opened",
+          "to": "canceled",
+          "trigger": "cancelServiceOrder",
+          "actor": "attendant",
+          "conditions": [
+            "ruleServiceOrderStatus",
+            "ruleRoleAccess"
+          ],
+          "actions": [
+            "ServiceOrder.status=cancelada",
+            "ServiceOrderCommand.commandType=cancelar_os"
+          ],
+          "rulesApplied": [
+            "ruleServiceOrderStatus",
+            "ruleRoleAccess"
+          ]
+        },
+        {
+          "from": "inExecution",
+          "to": "canceled",
+          "trigger": "cancelInExecution",
+          "actor": "attendant",
+          "conditions": [
+            "ruleServiceOrderStatus",
+            "ruleRoleAccess"
+          ],
+          "actions": [
+            "ServiceOrder.status=cancelada",
+            "ServiceOrderCommand.commandType=cancelar_os"
+          ],
+          "rulesApplied": [
+            "ruleServiceOrderStatus",
+            "ruleRoleAccess"
+          ]
+        },
+        {
+          "from": "waitingPart",
+          "to": "canceled",
+          "trigger": "cancelWaitingPart",
+          "actor": "attendant",
+          "conditions": [
+            "ruleServiceOrderStatus",
+            "ruleRoleAccess"
+          ],
+          "actions": [
+            "ServiceOrder.status=cancelada",
+            "ServiceOrderCommand.commandType=cancelar_os"
+          ],
+          "rulesApplied": [
+            "ruleServiceOrderStatus",
+            "ruleRoleAccess"
+          ]
+        }
+      ],
+      "requiredEntities": [
+        "ServiceOrder",
+        "LaborItem",
+        "Part",
+        "ServiceOrderCommand"
+      ],
+      "persistenceRefs": [
+        "serviceOrderCommandLog",
+        "laborItem"
+      ],
+      "usecaseRefs": [
+        "serviceOrderUsecaseEntities"
+      ],
+      "metricRefs": [
+        "serviceOrderMetrics"
+      ],
+      "userActions": [
+        "iniciarExecucao",
+        "aguardarPeca",
+        "retomarExecucao",
+        "registrarMaoDeObra",
+        "concluirServico",
+        "fecharOS",
+        "cancelarOS"
+      ],
+      "relatedPages": [],
+      "relatedAgents": [],
+      "relatedPlugins": [],
+      "rulesApplied": [
+        "ruleServiceOrderStatus",
+        "ruleServiceOrderTotal",
+        "ruleRoleAccess"
+      ],
+      "implementationSuggestions": [
+        {
+          "suggestionId": "taskOnStatusChange",
+          "title": "Criar tarefa ao mudar status da OS",
+          "priority": "now",
+          "description": "Gerar tarefas para o mecânico ao iniciar execução e para o atendente ao concluir, com título e SLA derivados do status da OS.",
+          "tradeoff": "Aumenta carga de notificações e exige configuração de filas/SLAs."
+        },
+        {
+          "suggestionId": "validateStatusTransition",
+          "title": "Validar transições de status no backend",
+          "priority": "now",
+          "description": "Centralizar a validação do ciclo de vida da OS em casos de uso para garantir consistência e auditoria.",
+          "tradeoff": "Exige mais lógica nos casos de uso e testes adicionais."
+        }
+      ],
+      "workflowScope": "singleModule",
+      "moduleRefs": [
+        "repairBay"
+      ],
+      "pageRefsByModule": [],
+      "entityRefsByModule": [
+        {
+          "moduleId": "repairBay",
+          "entity": "ServiceOrder"
+        },
+        {
+          "moduleId": "repairBay",
+          "entity": "LaborItem"
+        },
+        {
+          "moduleId": "repairBay",
+          "entity": "Part"
+        },
+        {
+          "moduleId": "repairBay",
+          "entity": "ServiceOrderCommand"
+        }
+      ],
+      "writesArtifacts": [
+        {
+          "moduleId": "repairBay",
+          "artifactType": "workflow",
+          "artifactId": "serviceOrderWorkflow"
+        }
+      ]
+    },
+    "defsPlan": {
+      "fileName": "workflows/serviceOrderWorkflow.defs.ts",
+      "exportName": "serviceOrderWorkflowDef",
+      "saveAsDefs": true
+    }
+  }
+} as const;
+
+export default serviceOrderWorkflowDef;

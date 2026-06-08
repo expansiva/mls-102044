@@ -1,0 +1,300 @@
+{
+  "schemaVersion": "2026-06-06",
+  "artifactType": "planHealthReport",
+  "moduleName": "repairBay",
+  "savedAt": "2026-06-08T23:29:29.238Z",
+  "source": {
+    "agentName": "agentValidateSolutionCoverage",
+    "stepId": 25,
+    "planId": "plan-validate-solution-coverage"
+  },
+  "report": {
+    "summary": {
+      "passed": false,
+      "errorCount": 27,
+      "warningCount": 14
+    },
+    "issues": [
+      {
+        "severity": "error",
+        "code": "mdm.incomplete",
+        "message": "MDM domains are listed but no MDM entity definitions or schema details were provided; MDM must be present and complete.",
+        "path": "mdmDomains",
+        "evidence": [
+          "domainId entries only: customer, vehicle, serviceOrder, partInventory, invoice"
+        ]
+      },
+      {
+        "severity": "error",
+        "code": "page.navigationRefs.missing",
+        "message": "Every page definition must declare navigationRefs as an array (possibly empty).",
+        "path": "pages.customerDetail",
+        "evidence": [
+          "navigationRefs not present"
+        ]
+      },
+      {
+        "severity": "error",
+        "code": "page.navigationRefs.missing",
+        "message": "Every page definition must declare navigationRefs as an array (possibly empty).",
+        "path": "pages.customerList",
+        "evidence": [
+          "navigationRefs not present"
+        ]
+      },
+      {
+        "severity": "error",
+        "code": "page.navigationRefs.missing",
+        "message": "Every page definition must declare navigationRefs as an array (possibly empty).",
+        "path": "pages.serviceOrderList",
+        "evidence": [
+          "navigationRefs not present"
+        ]
+      },
+      {
+        "severity": "error",
+        "code": "page.navigationRefs.missing",
+        "message": "Every page definition must declare navigationRefs as an array (possibly empty).",
+        "path": "pages.vehicleDetail",
+        "evidence": [
+          "navigationRefs not present"
+        ]
+      },
+      {
+        "severity": "error",
+        "code": "page.navigationRefs.missing",
+        "message": "Every page definition must declare navigationRefs as an array (possibly empty).",
+        "path": "pages.vehicleList",
+        "evidence": [
+          "navigationRefs not present"
+        ]
+      },
+      {
+        "severity": "error",
+        "code": "page.inputs.source.missing",
+        "message": "Detail pages must declare required identifiers with sources (routeParam, previousStepResult, etc.).",
+        "path": "pages.customerDetail.pageInputs",
+        "evidence": [
+          "customerId required without source",
+          "vehicleId required without source"
+        ]
+      },
+      {
+        "severity": "error",
+        "code": "page.inputs.source.missing",
+        "message": "Detail pages must declare required identifiers with sources (routeParam, previousStepResult, etc.).",
+        "path": "pages.vehicleDetail.pageInputs",
+        "evidence": [
+          "vehicleId present without source"
+        ]
+      },
+      {
+        "severity": "error",
+        "code": "page.inputs.source.missing",
+        "message": "Page inputs with required identifiers must declare a source.",
+        "path": "pages.serviceOrderList.pageInputs",
+        "evidence": [
+          "serviceOrderId required without source"
+        ]
+      },
+      {
+        "severity": "error",
+        "code": "workflow.taskConfig.missing",
+        "message": "Workflows with createsTask=true must have taskConfig populated.",
+        "path": "workflows.inventoryAlertWorkflow",
+        "evidence": [
+          "createsTask true but taskConfig missing"
+        ]
+      },
+      {
+        "severity": "error",
+        "code": "workflow.taskConfig.missing",
+        "message": "Workflows with createsTask=true must have taskConfig populated.",
+        "path": "workflows.serviceOrderWorkflow",
+        "evidence": [
+          "createsTask true but taskConfig missing"
+        ]
+      },
+      {
+        "severity": "error",
+        "code": "metric.table.incomplete",
+        "message": "Metric tables must declare timeColumn/hypertable, dimensions, measures, and updatePolicy updatedByLayer=layer_3_usecases.",
+        "path": "metricTables.inventoryMetrics",
+        "evidence": [
+          "only metricTableId and storageEngine provided"
+        ]
+      },
+      {
+        "severity": "error",
+        "code": "metric.table.incomplete",
+        "message": "Metric tables must declare timeColumn/hypertable, dimensions, measures, and updatePolicy updatedByLayer=layer_3_usecases.",
+        "path": "metricTables.invoiceMetrics",
+        "evidence": [
+          "only metricTableId and storageEngine provided"
+        ]
+      },
+      {
+        "severity": "error",
+        "code": "metric.table.incomplete",
+        "message": "Metric tables must declare timeColumn/hypertable, dimensions, measures, and updatePolicy updatedByLayer=layer_3_usecases.",
+        "path": "metricTables.maintenanceForecastMetrics",
+        "evidence": [
+          "only metricTableId and storageEngine provided"
+        ]
+      },
+      {
+        "severity": "error",
+        "code": "metric.table.incomplete",
+        "message": "Metric tables must declare timeColumn/hypertable, dimensions, measures, and updatePolicy updatedByLayer=layer_3_usecases.",
+        "path": "metricTables.serviceOrderMetrics",
+        "evidence": [
+          "only metricTableId and storageEngine provided"
+        ]
+      },
+      {
+        "severity": "error",
+        "code": "transactional.table.defs.missing",
+        "message": "Each transactional table must be emitted as a separate definition with defsPlan.saveAsDefs=true and stable fileName/exportName.",
+        "path": "tables",
+        "evidence": [
+          "inventoryAdjustmentCommandLog",
+          "laborItem",
+          "maintenanceForecast",
+          "maintenanceForecastCommandLog",
+          "repairSuggestion",
+          "serviceOrderCommandLog"
+        ]
+      },
+      {
+        "severity": "error",
+        "code": "metric.table.defs.missing",
+        "message": "Each metric table must be emitted as a separate definition with defsPlan.saveAsDefs=true and stable fileName/exportName.",
+        "path": "metricTables",
+        "evidence": [
+          "inventoryMetrics",
+          "invoiceMetrics",
+          "maintenanceForecastMetrics",
+          "serviceOrderMetrics"
+        ]
+      },
+      {
+        "severity": "error",
+        "code": "usecase.tableRef.unknown",
+        "message": "Usecases reference module-owned tables using snake_case names that do not match declared tableIds.",
+        "path": "usecases",
+        "evidence": [
+          "service_order_command_log vs serviceOrderCommandLog",
+          "labor_item vs laborItem",
+          "inventory_adjustment_command_log vs inventoryAdjustmentCommandLog",
+          "maintenance_forecast vs maintenanceForecast",
+          "maintenance_forecast_command_log vs maintenanceForecastCommandLog",
+          "repair_suggestion vs repairSuggestion",
+          "service_order_metrics vs serviceOrderMetrics",
+          "inventory_metrics vs inventoryMetrics",
+          "invoice_metrics vs invoiceMetrics",
+          "maintenance_forecast_metrics vs maintenanceForecastMetrics"
+        ]
+      },
+      {
+        "severity": "warning",
+        "code": "page.def.missing",
+        "message": "page serviceOrderCreate is in the index but has no definition",
+        "path": "pageIndex.serviceOrderCreate",
+        "evidence": []
+      },
+      {
+        "severity": "warning",
+        "code": "page.def.missing",
+        "message": "page serviceOrderDetail is in the index but has no definition",
+        "path": "pageIndex.serviceOrderDetail",
+        "evidence": []
+      },
+      {
+        "severity": "warning",
+        "code": "page.def.missing",
+        "message": "page vehicleHistory is in the index but has no definition",
+        "path": "pageIndex.vehicleHistory",
+        "evidence": []
+      },
+      {
+        "severity": "warning",
+        "code": "page.def.missing",
+        "message": "page inventoryList is in the index but has no definition",
+        "path": "pageIndex.inventoryList",
+        "evidence": []
+      },
+      {
+        "severity": "warning",
+        "code": "page.def.missing",
+        "message": "page inventoryAdjust is in the index but has no definition",
+        "path": "pageIndex.inventoryAdjust",
+        "evidence": []
+      },
+      {
+        "severity": "warning",
+        "code": "page.def.missing",
+        "message": "page invoiceList is in the index but has no definition",
+        "path": "pageIndex.invoiceList",
+        "evidence": []
+      },
+      {
+        "severity": "warning",
+        "code": "page.def.missing",
+        "message": "page invoiceCreate is in the index but has no definition",
+        "path": "pageIndex.invoiceCreate",
+        "evidence": []
+      },
+      {
+        "severity": "warning",
+        "code": "page.def.missing",
+        "message": "page invoiceDetail is in the index but has no definition",
+        "path": "pageIndex.invoiceDetail",
+        "evidence": []
+      },
+      {
+        "severity": "warning",
+        "code": "page.def.missing",
+        "message": "page operationalDashboard is in the index but has no definition",
+        "path": "pageIndex.operationalDashboard",
+        "evidence": []
+      },
+      {
+        "severity": "warning",
+        "code": "page.def.missing",
+        "message": "page metricsDashboard is in the index but has no definition",
+        "path": "pageIndex.metricsDashboard",
+        "evidence": []
+      },
+      {
+        "severity": "warning",
+        "code": "workflow.usecaseRef.unknown",
+        "message": "workflow billingWorkflow references unknown usecase invoiceUsecaseEntities",
+        "path": "workflow.billingWorkflow",
+        "evidence": []
+      },
+      {
+        "severity": "warning",
+        "code": "workflow.usecaseRef.unknown",
+        "message": "workflow inventoryAlertWorkflow references unknown usecase inventoryAdjustUsecaseEntities",
+        "path": "workflow.inventoryAlertWorkflow",
+        "evidence": []
+      },
+      {
+        "severity": "warning",
+        "code": "workflow.usecaseRef.unknown",
+        "message": "workflow maintenanceForecastWorkflow references unknown usecase maintenanceForecastUsecaseEntities",
+        "path": "workflow.maintenanceForecastWorkflow",
+        "evidence": []
+      },
+      {
+        "severity": "warning",
+        "code": "workflow.usecaseRef.unknown",
+        "message": "workflow serviceOrderWorkflow references unknown usecase serviceOrderUsecaseEntities",
+        "path": "workflow.serviceOrderWorkflow",
+        "evidence": []
+      }
+    ],
+    "checklistResults": null,
+    "readyToSaveDefs": false
+  }
+}
