@@ -1,0 +1,19 @@
+{
+  "name": "102044",
+  "version": "1.0.0",
+  "description": "",
+  "author": "",
+  "license": "ISC",
+  "scripts": {
+    "publish": "node ../scripts/runPublishMlsBase.mjs 102044 remote --sites",
+    "publish:local": "node ../scripts/runPublishMlsBase.mjs 102044 local",
+    "buildCI": "node ../scripts/buildCI/buildCI.mjs 102044"
+  },
+  "actionDependencies": {
+        "mls-ci": "git+https://github.com/expansiva/mls-ci.git",
+        "mls-102020": "git+https://github.com/expansiva/mls-102020.git",
+        "mls-102025": "git+https://github.com/expansiva/mls-102025.git",
+        "mls-102027": "git+https://github.com/expansiva/mls-102027.git"
+    }
+ 
+}
