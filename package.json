@@ -5,8 +5,9 @@
   "author": "",
   "license": "ISC",
   "scripts": {
-    "publish": "node ../scripts/runPublishMlsBase.mjs 102044 remote --sites",
-    "publish:local": "node ../scripts/runPublishMlsBase.mjs 102044 local",
+    "publish": "node ../scripts/publishGit.mjs 102044 remote --git-url=https://102044.collabcodes.com",
+    "publish:git": "node ../scripts/publishGit.mjs 102044 local",
+    "publish:remote": "node ../scripts/publishGit.mjs 102044 remote --git-url=https://102044.collabcodes.com",
     "buildCI": "node ../scripts/buildCI/buildCI.mjs 102044"
   },
   "actionDependencies": {
